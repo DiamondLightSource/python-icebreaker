@@ -48,35 +48,46 @@ def equalize_im(img, x_patches, y_patches, num_of_segments):
     return final_image
 
 
-cc = 0
-filelist = []
-outputs = []
-indir = sys.argv[1]
-outdir = 'equalized/'
-path1 = indir+outdir
+def main(indir):
+    cc = 0
+    outdir = 'equalized/'
+    path1 = os.path.join(indir, outdir)
 
-try:
-    os.mkdir(path1)
-except OSError:
-    print(f"Creation of the directory {path1} failed")
-else:
-    print(f"Successfully created the directory {path1}")
-
-for filename in os.listdir(indir):
-    if (filename.endswith(".mrc")):
-        filelist.append(filename)
+    try:
+        os.mkdir(path1)
+    except OSError:
+        print(f"Creation of the directory {path1} failed")
     else:
-        continue
+        print(f"Successfully created the directory {path1}")
 
-for filename in filelist:
-    img = load_img(indir+filename)
-    x_patches = 40
-    y_patches = 40
-    num_of_segments = 32
-    final_image = equalize_im(img, x_patches, y_patches, num_of_segments)
+    filelist = []
+    for filename in os.listdir(indir):
+        if (filename.endswith(".mrc")):
+            filelist.append(filename)
+        else:
+            continue
 
-    with mrcfile.new((path1+str(filename[:-4]) +'_'+str(x_patches)+'x'+str(y_patches)+'x'+str(num_of_segments)+'flattened'+'.mrc'), overwrite=True) as out_image:    # Make fstring
-        out_image.set_data(final_image)
+    for filename in filelist:
+        img = load_img(os.path.join(indir, filename))
 
-    cc += 1
-    print(str(cc) + '/' + str(len(filelist)))
+        # Config params
+        x_patches = 40
+        y_patches = 40
+        num_of_segments = 32
+
+        final_image = equalize_im(img, x_patches, y_patches, num_of_segments)
+
+        #with mrcfile.new((path1+str(filename[:-4]) +'_'+str(x_patches)+'x'+str(y_patches)+'x'+str(num_of_segments)+'flattened'+'.mrc'), overwrite=True) as out_image:    # Make fstring
+        with mrcfile.new((path1+filename), overwrite=True) as out_image:    # Make fstring
+            out_image.set_data(final_image)
+
+        cc += 1
+        print(f'{cc}/{len(filelist)}')
+
+    return True
+
+
+if __name__ == '__main__':
+    print("MAIN")
+    indir = sys.argv[1]
+    main(indir)
