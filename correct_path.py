@@ -24,5 +24,6 @@ def correct(ctf_star, all_dir):
             shutil.move(os.path.join(all_dir, picked_star),
                         os.path.join(full_dir, picked_star))
         except FileNotFoundError:
-            print(f"ERROR - Flattened Mic not found")
-            exit()
+            pass
+            # print(f"Warning - Flattened Mic not found (Most likely already moved)")
+            # Dont fail as this is often the case when iterating
