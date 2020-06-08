@@ -1,4 +1,5 @@
 python-relion-yolo-it/
-CryoloExternalJob.py~
-IBExternalJob.py~
 test_data/
+ib_external_job.py~
+correct_path.py~
+IBscripts/__pycache__/
