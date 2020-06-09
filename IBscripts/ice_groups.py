@@ -8,6 +8,8 @@ from itertools import groupby
 
 import gemmi
 import json
+sys.path.insert(0, "/home/lexi/Documents/Diamond/ICEBREAKER/")
+import star_appender
 
 
 # pd.set_option("display.max_colwidth", 10000)
@@ -86,9 +88,11 @@ for k in range(num_mics):
         else:
             ice_groups.append(-1)
 
+star_appender.update_star(starfile, ice_groups)
+
 '''
 header += '_rlnHelicalTubeID #'+str(rC+1)+'\n'  # change number
-d2 = pd.DataFrame({'_rlnHelicalTubeID': ice_groups})
+d2 = pd.DataFrame({'_rlnHelicalTubeID': ice_groups})   # Does this make sense?? - assuming order is correct...
 
 result = pd.concat([d1, d2], axis=1, sort=False)
 result = result.to_string(header=None, index=None)
