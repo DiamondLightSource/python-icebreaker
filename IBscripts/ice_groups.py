@@ -1,12 +1,16 @@
 import collections
 import sys
 import os
-import pandas as pd
+# import pandas as pd
 import mrcfile
 import numpy as np
 from itertools import groupby
 
-pd.set_option("display.max_colwidth", 10000)
+import gemmi
+import json
+
+
+# pd.set_option("display.max_colwidth", 10000)
 
 path_to_star = sys.argv[1]
 path_to_micrographs = sys.argv[2]
@@ -14,6 +18,7 @@ path_to_micrographs = sys.argv[2]
 starfile = path_to_star
 full_path = path_to_micrographs
 
+'''
 last = 99999999
 header = ''
 rC = 0
@@ -43,28 +48,45 @@ with open(starfile, 'r') as f:
 d1 = pd.read_csv(starfile, sep='\s+', skiprows=last, header=None)
 
 micrographs_used = (d1[:][micro_name[0]-1].unique())
+'''
 
+in_doc = gemmi.cif.read_file(starfile)
+data_as_dict = json.loads(in_doc.as_json())['particles']
+
+micrographs_used = data_as_dict['_rlnmicrographname']
+micrographs_unique = list(set(micrographs_used))
+num_mics = len(micrographs_unique)
+
+# mic_coord = collections.OrderedDict()
+# for i in range(num_mics):
+#     mic_coord[str(micrographs_used[i])] = (d1.loc[d1[micro_name[0]-1] == str(
+#             micrographs_used[i])].index[:]).tolist()
+
+# Get all indices of particles from given micrograph
 mic_coord = collections.OrderedDict()
-for i in range(len(micrographs_used)):
-    mic_coord[str(micrographs_used[i])] = (d1.loc[d1[micro_name[0]-1] == str(
-            micrographs_used[i])].index[:]).tolist()
+for mic in micrographs_unique:
+    mic_coord[mic] = [i for i, e in enumerate(micrographs_used) if e == mic]
+print(mic_coord)
 
 ice_groups = []
-for k in range(len(micrographs_used)):
-    print(f'{k} / {len(micrographs_used)}')
-    im_path = full_path + os.path.split(
-            str(micrographs_used[k])[:-4])[-1] + '_40x40x16_original_mean.mrc'
+for k in range(num_mics):
+    print(f'{k} / {num_mics}')
+    mic = micrographs_unique[k]
+    im_path = os.path.join(full_path, os.path.split(
+            mic[:-4])[-1] + '_grouped.mrc')
+
     with mrcfile.open(im_path, 'r+', permissive=True) as mrc:  #! change to right path and patch size
         micro_now = mrc.data
-        for i in range(len(mic_coord[micrographs_used[k]])):
-            row = (mic_coord[micrographs_used[k]][i])
-            x1 = int(np.floor(d1.iloc[row][coord_X[0]-1]))
-            y1 = int(np.floor(d1.iloc[row][coord_Y[0]-1]))
-            if micro_now is not None:
-                ice_groups.append(int(micro_now[y1][x1]*10000))
-            else:
-                ice_groups.append(-1)
 
+    for part_ind in mic_coord[mic]:
+        x1 = int(np.floor(data_as_dict['_rlncoordinatex'][part_ind]))
+        y1 = int(np.floor(data_as_dict['_rlncoordinatey'][part_ind]))
+        if micro_now is not None:
+            ice_groups.append(int(micro_now[y1][x1]*10000))
+        else:
+            ice_groups.append(-1)
+
+'''
 header += '_rlnHelicalTubeID #'+str(rC+1)+'\n'  # change number
 d2 = pd.DataFrame({'_rlnHelicalTubeID': ice_groups})
 
@@ -73,3 +95,4 @@ result = result.to_string(header=None, index=None)
 with open(starfile[:-5] + '_icegroups_from_original_mean_scaled.star', 'w') as fd:
     fd.write(header)
     fd.write(result)
+'''
