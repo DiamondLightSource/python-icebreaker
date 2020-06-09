@@ -17,17 +17,18 @@ import gemmi
 import sys
 sys.path.insert(0, "/home/lexi/Documents/Diamond/ICEBREAKER/IBscripts")
 import icebreaker_equalize as ib_equal
+import icebreaker_icegroups as ib_group
 import correct_path
 
 
-def run_job(project_dir, job_dir, args_list):
+def run_job(project_dir, job_dir, args_list, mode):
     parser = argparse.ArgumentParser()
     parser.add_argument("--in_star", help="Input: Motion correction star file")
     args = parser.parse_args(args_list)
     starfile = args.in_star
 
     # Reading the micrographs star file from relion
-    ctf_star = os.path.join(project_dir, args.in_star)
+    ctf_star = os.path.join(project_dir, starfile)
     in_doc = gemmi.cif.read_file(ctf_star)
 
     data_as_dict = json.loads(in_doc.as_json())['micrographs']
@@ -49,20 +50,22 @@ def run_job(project_dir, job_dir, args_list):
                     os.path.join('IB_input',
                                  os.path.split(micrograph)[-1]))
 
-    if ib_equal.main('IB_input'):
+    if mode == 'group':
+        ib_group.main('IB_input')
         print("Done equalizing")
+    elif mode == 'flatten':
+        ib_equal.main('IB_input')
 
     with open('done_mics.txt', 'a+') as f:  # Done mics is to ensure that IB doesn't pick from already done mics
         for micrograph in os.listdir('IB_input'):
             if micrograph.endswith('mrc'):
                 f.write(micrograph + '\n')
 
-    correct_path.correct(ctf_star, os.path.join('IB_input', 'equalized'))
-    exit()
+    correct_path.correct(ctf_star, os.path.join('IB_input', f'{mode}ed'), f'{mode}ed')
 
     # Writing a star file for Relion
     part_doc = open('ib_equalize.star', 'w')
-    part_doc.write(os.path.join(project_dir, args.in_star))
+    part_doc.write(os.path.join(project_dir, starfile))
     part_doc.close()
 
     # Required star file
@@ -77,14 +80,23 @@ def main():
     """Change to the job working directory, then call run_job()"""
     parser = argparse.ArgumentParser()
     parser.add_argument("--o", dest="out_dir", help="Output directory name")
+    parser.add_argument("--mode", help="ICEBREAKER mode to run i.e. flatten or group")
     known_args, other_args = parser.parse_known_args()
+
+    mode = known_args.mode
+    poss_modes = ['group', 'flatten']
+    if mode not in poss_modes:
+        print("IB ERROR - Mode type not found")
+        exit()
+
     project_dir = os.getcwd()
+    job_dir = f'{known_args.out_dir}_{mode}'
     try:
-        os.mkdir(known_args.out_dir)
+        os.mkdir(job_dir)
     except FileExistsError: pass
-    os.chdir(known_args.out_dir)
+    os.chdir(job_dir)
     try:
-        run_job(project_dir, known_args.out_dir, other_args)
+        run_job(project_dir, job_dir, other_args, mode)
     except:
         open('RELION_JOB_EXIT_FAILURE', 'w').close()
         raise

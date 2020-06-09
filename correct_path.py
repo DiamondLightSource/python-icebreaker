@@ -8,7 +8,7 @@ import pathlib
 import shutil
 
 
-def correct(ctf_star, all_dir):
+def correct(ctf_star, all_dir, ending):
     in_doc = gemmi.cif.read_file(ctf_star)
     data_as_dict = json.loads(in_doc.as_json())['micrographs']
 
@@ -19,7 +19,7 @@ def correct(ctf_star, all_dir):
         for d in dirs.split('/')[2:]:
             full_dir = os.path.join(full_dir, d)
         pathlib.Path(full_dir).mkdir(parents=True, exist_ok=True)
-        picked_star = os.path.splitext(mic_file)[0] + '_flattened.mrc'
+        picked_star = os.path.splitext(mic_file)[0] + f'_{ending}.mrc'
         if os.path.isfile(os.path.join(all_dir, picked_star)): 
             try:
                 shutil.move(os.path.join(all_dir, picked_star),

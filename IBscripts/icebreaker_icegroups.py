@@ -7,7 +7,7 @@ import mrcfile
 import cv2
 import numpy as np
 import os
-import ndimage
+from scipy import ndimage
 
 import filter_designer as fd
 import window_mean as wm
@@ -53,14 +53,14 @@ def ice_grouper(img, x_patches, y_patches, num_of_segments):
 
 
 def main(indir):
-    outdir = 'icegroups/'
-    path1 = indir+outdir
+    outdir = 'grouped'
+    path1 = os.path.join(indir, outdir)
     try:
         os.mkdir(path1)
     except OSError:
-        print("Creation of the directory %s failed" % path1)
+        print(f"Creation of the directory {path1} failed")
     else:
-        print("Successfully created the directory %s " % path1)
+        print(f"Successfully created the directory {path1}")
 
     filelist = []
     for filename in os.listdir(indir):
@@ -71,17 +71,18 @@ def main(indir):
 
     cc = 0
     for filename in filelist:
-        img = load_img(indir+filename)
+        img = load_img(os.path.join(indir, filename))
 
         # Config params
         x_patches = 40
         y_patches = 40
         num_of_segments = 16
 
-        final_image = ice_grouper(img, x_patches, y_patches, num_of_segments)
+        # final_image = ice_grouper(img, x_patches, y_patches, num_of_segments)
+        final_image = img  # !!!!! FOR TESTING
 
-
-        with mrcfile.new((path1+str(filename[:-4]) +'_'+str(x_patches)+'x'+str(y_patches)+'x'+str(num_of_segments)+'_original_mean'+'.mrc'), overwrite=True) as out_image:
+        # with mrcfile.new((path1+str(filename[:-4]) +'_'+str(x_patches)+'x'+str(y_patches)+'x'+str(num_of_segments)+'_original_mean'+'.mrc'), overwrite=True) as out_image:
+        with mrcfile.new(os.path.join(path1, filename[:-4] + f'_{outdir}.mrc'), overwrite=True) as out_image:    # Make fstring
             out_image.set_data(final_image)
 
         cc += 1
