@@ -15,7 +15,7 @@ import shutil
 
 import gemmi
 import sys
-sys.path.insert(0, "/home/lexi/Documents/Diamond/ICEBREAKER/IBscripts")
+sys.path.insert(0, "/dls/ebic/data/staff-scratch/test_ice/relion_wrappers/ICEBREAKER/IBscripts")
 import icebreaker_equalize as ib_equal
 import icebreaker_icegroups as ib_group
 import correct_path
@@ -23,9 +23,9 @@ import correct_path
 
 def run_job(project_dir, job_dir, args_list, mode):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--in_star", help="Input: Motion correction star file")
+    parser.add_argument("--in_mics", help="Input: Motion correction star file")
     args = parser.parse_args(args_list)
-    starfile = args.in_star
+    starfile = args.in_mics
 
     # Reading the micrographs star file from relion
     ctf_star = os.path.join(project_dir, starfile)
@@ -81,6 +81,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--o", dest="out_dir", help="Output directory name")
     parser.add_argument("--mode", help="ICEBREAKER mode to run i.e. flatten or group")
+    parser.add_argument("--j", help="relion stuff...")
     known_args, other_args = parser.parse_known_args()
 
     mode = known_args.mode
