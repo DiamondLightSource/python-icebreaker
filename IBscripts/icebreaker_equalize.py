@@ -49,7 +49,6 @@ def equalize_im(img, x_patches, y_patches, num_of_segments):
 
 
 def main(indir):
-    cc = 0
     outdir = 'equalized/'
     path1 = os.path.join(indir, outdir)
 
@@ -67,6 +66,7 @@ def main(indir):
         else:
             continue
 
+    cc = 0
     for filename in filelist:
         img = load_img(os.path.join(indir, filename))
 
@@ -88,6 +88,5 @@ def main(indir):
 
 
 if __name__ == '__main__':
-    print("MAIN")
     indir = sys.argv[1]
     main(indir)
