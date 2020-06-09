@@ -15,6 +15,7 @@ import shutil
 
 import gemmi
 import sys
+sys.path.insert(0, "/dls/ebic/data/staff-scratch/test_ice/relion_wrappers/ICEBREAKER/IBscripts")
 sys.path.insert(0, "/home/lexi/Documents/Diamond/ICEBREAKER/IBscripts")
 import ice_groups as ib_igroups
 
@@ -50,7 +51,7 @@ def main():
     known_args, other_args = parser.parse_known_args()
 
     project_dir = os.getcwd()
-    job_dir = f'{known_args.out_dir}_partgroups'
+    job_dir = known_args.out_dir
     try:
         os.mkdir(job_dir)
     except FileExistsError: pass
