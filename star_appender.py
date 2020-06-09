@@ -17,7 +17,6 @@ def update_star(starfile, ice_groups):
     for i in range(len(table)):
         row = table[i]
         new_row = list(row)
-        print(new_row)
         new_row.append(f'{ice_groups[i]}')
         loop.add_row(new_row)  # update temp new table with all data
 
