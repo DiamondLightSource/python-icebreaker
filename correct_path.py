@@ -20,10 +20,10 @@ def correct(ctf_star, all_dir):
             full_dir = os.path.join(full_dir, d)
         pathlib.Path(full_dir).mkdir(parents=True, exist_ok=True)
         picked_star = os.path.splitext(mic_file)[0] + '_flattened.mrc'
-        try:
-            shutil.move(os.path.join(all_dir, picked_star),
-                        os.path.join(full_dir, picked_star))
-        except FileNotFoundError:
-            pass
-            # print(f"Warning - Flattened Mic not found (Most likely already moved)")
-            # Dont fail as this is often the case when iterating
+        if os.path.isfile(os.path.join(all_dir, picked_star)): 
+            try:
+                shutil.move(os.path.join(all_dir, picked_star),
+                            os.path.join(full_dir, picked_star))
+            except FileNotFoundError:
+                print(f"Warning - Flattened Mic not found (Most likely already moved)")
+                pass

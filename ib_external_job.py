@@ -35,12 +35,6 @@ def run_job(project_dir, job_dir, args_list):
     try:
         os.mkdir('IB_input')
     except FileExistsError:
-        # Not crucial so if fails due to any reason just carry on
-        try:
-            with open('done_mics.txt', 'a+') as f:  # Done mics is to ensure that IB doesn't pick from already done mics
-                for micrograph in os.listdir('IB_input'):
-                    f.write(micrograph + '\n')
-        except: pass  # occurs if on first pass
         shutil.rmtree('IB_input')
         os.mkdir('IB_input')
 
@@ -58,18 +52,13 @@ def run_job(project_dir, job_dir, args_list):
     if ib_equal.main('IB_input'):
         print("Done equalizing")
 
-    # try:
-    #     os.mkdir('flattened_mics')
-    # except FileExistsError: pass
-
-    # for flattened in os.listdir(os.path.join('IB_input', 'equalized')):
-    #     new_name = os.path.splitext(flattened)[0]+'_flattened'+'.mrc'
-    #     try:
-    #         os.link(os.path.join('IB_input', 'equalized', flattened),
-    #                 os.path.join('flattened_mics', new_name))
-    #     except: pass
+    with open('done_mics.txt', 'a+') as f:  # Done mics is to ensure that IB doesn't pick from already done mics
+        for micrograph in os.listdir('IB_input'):
+            if micrograph.endswith('mrc'):
+                f.write(micrograph + '\n')
 
     correct_path.correct(ctf_star, os.path.join('IB_input', 'equalized'))
+    exit()
 
     # Writing a star file for Relion
     part_doc = open('ib_equalize.star', 'w')
