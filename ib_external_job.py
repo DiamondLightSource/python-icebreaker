@@ -50,7 +50,7 @@ def run_job(project_dir, job_dir, args_list, mode):
         if os.path.split(micrograph)[-1] not in done_mics:
             os.link(os.path.join(project_dir, micrograph),
                     os.path.join('IB_input',
-                                 os.path.split(micrograph)[-1]))
+                    os.path.split(micrograph)[-1]))
 
     if mode == 'group':
         ib_group.main('IB_input')
