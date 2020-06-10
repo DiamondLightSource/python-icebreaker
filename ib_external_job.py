@@ -20,6 +20,7 @@ sys.path.insert(0, "/home/lexi/Documents/Diamond/ICEBREAKER/IBscripts")
 import icebreaker_equalize as ib_equal
 import icebreaker_icegroups as ib_group
 import correct_path
+import star_appender
 
 
 def run_job(project_dir, job_dir, args_list, mode):
@@ -70,11 +71,15 @@ def run_job(project_dir, job_dir, args_list, mode):
     part_doc.write(job_dir)
     part_doc.close()
 
+    # make flattened_micrgraph.star
+    star_appender.mic_star(ctf_star, job_dir)
+
     # Required star file
     out_doc = gemmi.cif.Document()
     output_nodes_block = out_doc.add_new_block('output_nodes')
     loop = output_nodes_block.init_loop('', ['_rlnPipeLineNodeName', '_rlnPipeLineNodeType'])
     loop.add_row([os.path.join(job_dir, 'ib_equalize.star'), '1'])
+    loop.add_row([os.path.join(job_dir, 'flattend_micrograph.star'), '1'])
     out_doc.write_file('RELION_OUTPUT_NODES.star')
 
 
