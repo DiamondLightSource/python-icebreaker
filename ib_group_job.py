@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
 External job for calling IceBreaker grouping within Relion 3.1
-in_star is input star file from relion picking job 
-group_job is previous grouping job directory
+in_parts is input star file from relion picking job 
+in_mics is previous grouping job directory
 
 Run in main Relion project directory
 """
@@ -22,11 +22,11 @@ import ice_groups as ib_igroups
 
 def run_job(project_dir, job_dir, args_list):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--in_star", help="Input: particle star file")
-    parser.add_argument("--group_job", help="Input: previous ice_group job")
+    parser.add_argument("--in_parts", help="Input: particle star file")
+    parser.add_argument("--in_mics", help="Input: previous ice_group job")
     args = parser.parse_args(args_list)
-    starfile = args.in_star
-    group_job = args.group_job
+    starfile = args.in_parts
+    group_job = args.in_mics
 
 
     ib_igroups.main(os.path.join(project_dir, starfile), os.path.join(project_dir, group_job))
