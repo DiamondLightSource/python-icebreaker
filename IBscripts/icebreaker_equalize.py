@@ -75,8 +75,8 @@ def main(indir):
         y_patches = 40
         num_of_segments = 32
 
-        # final_image = equalize_im(img, x_patches, y_patches, num_of_segments)
-        final_image = img  # !!!! TESTING
+        final_image = equalize_im(img, x_patches, y_patches, num_of_segments)
+        # final_image = img  # !!!! TESTING
 
         #with mrcfile.new((path1+str(filename[:-4]) +'_'+str(x_patches)+'x'+str(y_patches)+'x'+str(num_of_segments)+'flattened'+'.mrc'), overwrite=True) as out_image:    # Make fstring
         with mrcfile.new(os.path.join(path1, filename[:-4] + f'_{outdir}.mrc'), overwrite=True) as out_image:    # Make fstring
