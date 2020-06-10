@@ -39,7 +39,6 @@ def main(starfile, mic_path):
     for mic in micrographs_unique:
         mic_coord[mic] = [i for i, e in enumerate(micrographs_used)
                           if e == mic]
-    print(mic_coord)
 
     ice_groups = []
     for k in range(num_mics):

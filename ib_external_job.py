@@ -66,14 +66,15 @@ def run_job(project_dir, job_dir, args_list, mode):
 
     # Writing a star file for Relion
     part_doc = open('ib_equalize.star', 'w')
-    part_doc.write(os.path.join(project_dir, starfile))
+    part_doc.write(os.path.join(project_dir, starfile)+'\n')
+    part_doc.write(job_dir)
     part_doc.close()
 
     # Required star file
     out_doc = gemmi.cif.Document()
     output_nodes_block = out_doc.add_new_block('output_nodes')
     loop = output_nodes_block.init_loop('', ['_rlnPipeLineNodeName', '_rlnPipeLineNodeType'])
-    loop.add_row([os.path.join(job_dir, '_manualpick.star'), '2'])
+    loop.add_row([os.path.join(job_dir, 'ib_equalize.star'), '1'])
     out_doc.write_file('RELION_OUTPUT_NODES.star')
 
 

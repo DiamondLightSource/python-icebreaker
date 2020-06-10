@@ -25,22 +25,27 @@ def run_job(project_dir, job_dir, args_list):
     parser.add_argument("--in_parts", help="Input: particle star file")
     parser.add_argument("--in_mics", help="Input: previous ice_group job")
     args = parser.parse_args(args_list)
-    starfile = args.in_parts
-    group_job = args.in_mics
+    parts_star = args.in_parts
+    group_star = os.path.join(project_dir, args.in_mics)
 
+    with open(group_star) as f:
+        lines = [line.rstrip() for line in f]
+    group_job = lines[1]
 
-    ib_igroups.main(os.path.join(project_dir, starfile), os.path.join(project_dir, group_job))
+    ib_igroups.main(os.path.join(project_dir, parts_star),
+                    os.path.join(project_dir, group_job))
 
     # Writing a star file for Relion
     part_doc = open('ib_icegroups.star', 'w')
-    part_doc.write(os.path.join(project_dir, starfile))
+    part_doc.write(os.path.join(project_dir, parts_star))
+    part_doc.write(os.path.join(project_dir, group_job))
     part_doc.close()
 
     # Required star file
     out_doc = gemmi.cif.Document()
     output_nodes_block = out_doc.add_new_block('output_nodes')
     loop = output_nodes_block.init_loop('', ['_rlnPipeLineNodeName', '_rlnPipeLineNodeType'])
-    loop.add_row([os.path.join(job_dir, '_manualpick.star'), '2'])
+    loop.add_row([os.path.join(job_dir, 'particles.star'), '5'])
     out_doc.write_file('RELION_OUTPUT_NODES.star')
 
 
