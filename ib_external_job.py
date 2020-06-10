@@ -79,7 +79,7 @@ def run_job(project_dir, job_dir, args_list, mode):
     output_nodes_block = out_doc.add_new_block('output_nodes')
     loop = output_nodes_block.init_loop('', ['_rlnPipeLineNodeName', '_rlnPipeLineNodeType'])
     loop.add_row([os.path.join(job_dir, 'ib_equalize.star'), '1'])
-    loop.add_row([os.path.join(job_dir, 'flattend_micrograph.star'), '1'])
+    loop.add_row([os.path.join(job_dir, 'flattened_micrographs.star'), '1'])
     out_doc.write_file('RELION_OUTPUT_NODES.star')
 
 
