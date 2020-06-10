@@ -48,6 +48,7 @@ def main():
     """Change to the job working directory, then call run_job()"""
     parser = argparse.ArgumentParser()
     parser.add_argument("--o", dest="out_dir", help="Output directory name")
+    parser.add_argument("--j", help="relion stuff...")
     known_args, other_args = parser.parse_known_args()
 
     project_dir = os.getcwd()
