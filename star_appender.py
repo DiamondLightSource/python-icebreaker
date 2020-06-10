@@ -24,7 +24,7 @@ def update_star(starfile, ice_groups):
     new_document.write_file('particles.star')
 
 
-def mic_star(starfile, job):
+def mic_star(starfile, job, mode):
     in_doc = gemmi.cif.read_file(starfile)
     block = in_doc.find_block('micrographs')
     new_document = gemmi.cif.Document()
@@ -44,13 +44,15 @@ def mic_star(starfile, job):
         row = table[i]
         new_row = list(row)
         mic_name = list(column[i])[0]
+        mic_name = os.path.splitext(mic_name)[0] + f'_{mode}ed.mrc'
         new_row.insert(0, os.path.join(job, mic_name))
         loop.add_row(new_row)  # update temp new table with all data
 
-    new_document.write_file('flattened_micrographs.star')
+    new_document.write_file(f'{mode}ed_micrographs.star')
 
 
 if __name__ == '__main__':
     starfile = '/home/lexi/Documents/Diamond/ICEBREAKER/test_data/corrected_micrographs.star'
     job = 'External'
-    mic_star(starfile, job)
+    mode = 'flatten'
+    mic_star(starfile, job, mode)
