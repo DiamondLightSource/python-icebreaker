@@ -54,6 +54,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--o", dest="out_dir", help="Output directory name")
     parser.add_argument("--j", help="relion stuff...")
+    parser.add_argument("--pipeline_control", help="relion scheduler stuff...")
     known_args, other_args = parser.parse_known_args()
 
     project_dir = os.getcwd()
