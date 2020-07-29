@@ -6,7 +6,7 @@ import numpy as np
 
 import gemmi
 import json
-sys.path.insert(0, "/home/lexi/Documents/Diamond/ICEBREAKER/")
+
 import star_appender
 
 
