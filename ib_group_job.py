@@ -15,9 +15,8 @@ import shutil
 
 import gemmi
 import sys
-sys.path.insert(0, "/dls/ebic/data/staff-scratch/test_ice/relion_wrappers/ICEBREAKER/IBscripts")
-sys.path.insert(0, "/home/lexi/Documents/Diamond/ICEBREAKER/IBscripts")
-import ice_groups as ib_igroups
+
+from IBscripts import ice_groups as ib_igroups
 
 
 def run_job(project_dir, job_dir, args_list):
