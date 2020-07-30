@@ -8,3 +8,7 @@ in_mics is previous grouping job directory
  
 Run in main Relion project directory
 
+##Processing the micrographs
+
+
+##Processing the particles
