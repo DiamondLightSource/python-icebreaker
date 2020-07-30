@@ -15,10 +15,10 @@ import shutil
 
 import gemmi
 import sys
-sys.path.insert(0, "/dls/ebic/data/staff-scratch/test_ice/relion_wrappers/ICEBREAKER/IBscripts")
-sys.path.insert(0, "/home/lexi/Documents/Diamond/ICEBREAKER/IBscripts")
-import icebreaker_equalize as ib_equal
-import icebreaker_icegroups as ib_group
+#sys.path.insert(0, "/dls/ebic/data/staff-scratch/test_ice/relion_wrappers/ICEBREAKER/IBscripts")
+#sys.path.insert(0, "/home/lexi/Documents/Diamond/ICEBREAKER/IBscripts")
+from IBscripts import icebreaker_equalize as ib_equal
+from IBscripts import icebreaker_icegroups as ib_group
 import correct_path
 import star_appender
 

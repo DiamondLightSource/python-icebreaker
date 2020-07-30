@@ -4,21 +4,45 @@ Output is group of icegrouped images.
 """
 import sys
 import mrcfile
-# import cv2
+import cv2
 import numpy as np
 import os
-from scipy import ndimage
+import time
+#from scipy import ndimage
 
-# import filter_designer as fd
-# import window_mean as wm
-# import KNN_segmenter as KNN_seg
-# import original_mask as om
+from multiprocessing import Pool
 
+from IBscripts import filter_designer as fd
+from IBscripts import window_mean as wm
+from IBscripts import KNN_segmenter as KNN_seg
+from IBscripts import original_mask as om
+from IBscripts import original_mask_fast as omf
 
 def load_img(img_path):
     with mrcfile.open(img_path, 'r', permissive=True) as mrc:
+        
+        #mrc.header.map = mrcfile.constants.MAP_ID
         img = mrc.data
         return img
+
+def multigroup(filelist_full):
+
+    #for filename in filelist:
+    img = load_img(filelist_full)
+    splitpath = os.path.split(filelist_full)
+    #print(splitpath[0])
+        # Config params
+    x_patches = 40
+    y_patches = 40
+    num_of_segments = 16
+
+    final_image = ice_grouper(img, x_patches, y_patches, num_of_segments)
+        #final_image = img  # !!!!! FOR TESTING
+
+        # with mrcfile.new((path1+str(filename[:-4]) +'_'+str(x_patches)+'x'+str(y_patches)+'x'+str(num_of_segments)+'_original_mean'+'.mrc'), overwrite=True) as out_image:
+    with mrcfile.new(os.path.join(splitpath[0]+'/grouped/' +splitpath[1][:-4] + f'_grouped.mrc'), overwrite=True) as out_image:    # Make fstring
+            out_image.set_data(final_image)
+
 
 
 def ice_grouper(img, x_patches, y_patches, num_of_segments):
@@ -41,18 +65,18 @@ def ice_grouper(img, x_patches, y_patches, num_of_segments):
                              num_of_segments), np.float32)
     res = np.zeros((lowpass.shape[0], lowpass.shape[1]), np.float32)
     for i in range (len(regions_vals)):
-            averaged_loc[:, :, i] = om.original_mask(lowpass,
+            averaged_loc[:, :, i] = omf.original_mask(lowpass,
                                                      KNNsegmented,
                                                      regions_vals[i],
                                                      img, lowpass12)
             res[:, :] += averaged_loc[:, :, i]
 
-    final_image = ndimage.median_filter(res, size=10)
+    final_image = res
 
     return final_image
 
 
-def main(indir):
+def main(indir,cpus):
     outdir = 'grouped'
     path1 = os.path.join(indir, outdir)
     try:
@@ -61,35 +85,26 @@ def main(indir):
         print(f"Creation of the directory {path1} failed")
     else:
         print(f"Successfully created the directory {path1}")
+    start_time = time.time()
 
     filelist = []
     for filename in os.listdir(indir):
         if (filename.endswith(".mrc")):
-            filelist.append(filename)
+            finalpath = os.path.join(indir,filename)
+            filelist.append(finalpath)
+            #print(filelist)
         else:
             continue
 
-    cc = 0
-    for filename in filelist:
-        img = load_img(os.path.join(indir, filename))
+    #cc = 0
+    
+    with Pool(cpus) as p:
+        p.map(multigroup, filelist)
 
-        # Config params
-        x_patches = 40
-        y_patches = 40
-        num_of_segments = 16
-
-        # final_image = ice_grouper(img, x_patches, y_patches, num_of_segments)
-        final_image = img  # !!!!! FOR TESTING
-
-        # with mrcfile.new((path1+str(filename[:-4]) +'_'+str(x_patches)+'x'+str(y_patches)+'x'+str(num_of_segments)+'_original_mean'+'.mrc'), overwrite=True) as out_image:
-        with mrcfile.new(os.path.join(path1, filename[:-4] + f'_{outdir}.mrc'), overwrite=True) as out_image:    # Make fstring
-            out_image.set_data(final_image)
-
-        cc += 1
-        print(f'{cc}/{len(filelist)}')
+    print('------ %s sec------' % (time.time()-start_time))
 
     return True
 
 if __name__ == '__main__':
     indir = sys.argv[1]
-    main(indir)
+    main(indir,batch_size)
