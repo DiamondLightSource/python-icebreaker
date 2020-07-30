@@ -17,9 +17,8 @@ import shutil
 import gemmi
 import sys
 
-import correct_path
-import star_appender
-
+from IBscripts import correct_path
+from IBscripts import star_appender
 from IBscripts import icebreaker_equalize_multi as ib_equal
 from IBscripts import icebreaker_icegroups_multi as ib_group
 

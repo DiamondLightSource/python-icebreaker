@@ -7,7 +7,7 @@ import numpy as np
 import gemmi
 import json
 
-import star_appender
+from IBscripts import star_appender
 
 
 def splitall(path):
