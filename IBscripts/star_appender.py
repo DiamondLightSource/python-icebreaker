@@ -15,8 +15,8 @@ def update_star(starfile, ice_groups):
 
     # add new tag: named this to work in relion, but really it is
     # ice group for each particle (_ibIceGroup)
-    tags.append('_rlnHelicalTubeID')
-    #tags.append('_rlnIbIceGroup')
+    #tags.append('_rlnHelicalTubeID')
+    tags.append('_rlnIbIceGroup')
     loop = block_one.init_loop('', tags)  # make temp new table
     for i in range(len(table)):
         row = table[i]
