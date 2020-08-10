@@ -1,6 +1,7 @@
 import collections
 import sys
 import os
+import glob
 import mrcfile
 import numpy as np
 
@@ -32,6 +33,7 @@ def main(starfile, mic_path):
     data_as_dict = json.loads(in_doc.as_json())['particles']
 
     micrographs_used = data_as_dict['_rlnmicrographname']
+    #print(micrographs_used)  
     micrographs_unique = list(set(micrographs_used))
     num_mics = len(micrographs_unique)
 
@@ -44,15 +46,19 @@ def main(starfile, mic_path):
     for k in range(num_mics):
         print(f'{k+1} / {num_mics}')
         mic = micrographs_unique[k]
-        print(mic)
+        ##print(mic)
         # im_path = os.path.join(mic_path, os.path.split(
         #         mic[:-4])[2:] + '_grouped.mrc')
         split_path = splitall(mic[:-4] + '_grouped.mrc')
         im_path = os.path.join(mic_path, *split_path)
         #print(im_path)
-        #print(mic_path)
+        print(mic_path)
         #print(*split_path)
-        with mrcfile.open(im_path, 'r+', permissive=True) as mrc:
+        #print(split_path[-1])
+        
+        im_path22 = os.path.join(mic_path, split_path[-2], split_path[-1])
+        print(im_path22)
+        with mrcfile.open(im_path22, 'r+', permissive=True) as mrc:
             micro_now = mrc.data
 
         for part_ind in mic_coord[mic]:
