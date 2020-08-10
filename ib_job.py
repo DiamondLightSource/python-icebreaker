@@ -65,20 +65,20 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
 
     correct_path.correct(ctf_star, os.path.join('IB_input', f'{mode}ed'), f'{mode}ed')
 
-    # Writing a star file for Relion
-    part_doc = open('ib_equalize.star', 'w')
-    part_doc.write(os.path.join(project_dir, starfile)+'\n')
-    part_doc.write(job_dir)
-    part_doc.close()
 
-    # make {mode}ed_micrgraph.star
+    # Writing a star file for Relion
+    #part_doc = open('ib_equalize.star', 'w')
+    #part_doc.write(os.path.join(project_dir, starfile)+'\n')
+    #part_doc.write(job_dir)
+    #part_doc.close()
+
     star_appender.mic_star(ctf_star, job_dir, mode)
 
     # Required star file
     out_doc = gemmi.cif.Document()
     output_nodes_block = out_doc.add_new_block('output_nodes')
     loop = output_nodes_block.init_loop('', ['_rlnPipeLineNodeName', '_rlnPipeLineNodeType'])
-    loop.add_row([os.path.join(job_dir, 'ib_equalize.star'), '1'])
+    #loop.add_row([os.path.join(job_dir, 'ib_equalize.star'), '1'])
     loop.add_row([os.path.join(job_dir, f'{mode}ed_micrographs.star'), '1'])
     out_doc.write_file('RELION_OUTPUT_NODES.star')
 

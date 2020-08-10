@@ -26,18 +26,18 @@ def run_job(project_dir, job_dir, args_list):
     args = parser.parse_args(args_list)
     parts_star = args.in_parts
     group_star = os.path.join(project_dir, args.in_mics)
-
+    print(group_star)
     with open(group_star) as f:
         lines = [line.rstrip() for line in f]
     group_job = lines[1]
 
     ib_igroups.main(os.path.join(project_dir, parts_star),
-                    os.path.join(project_dir, group_job))
+                    os.path.join(project_dir, group_star))
 
     # Writing a star file for Relion
     part_doc = open('ib_icegroups.star', 'w')
     part_doc.write(os.path.join(project_dir, parts_star))
-    part_doc.write(os.path.join(project_dir, group_job))
+    part_doc.write(os.path.join(project_dir, group_star))
     part_doc.close()
 
     # Required star file
