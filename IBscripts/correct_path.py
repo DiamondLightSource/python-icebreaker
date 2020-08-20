@@ -15,9 +15,9 @@ def correct(ctf_star, all_dir, ending):
     for i in range(len(data_as_dict['_rlnmicrographname'])):
         name = data_as_dict['_rlnmicrographname'][i]
         dirs, mic_file = os.path.split(name)
-        #x = pathlib.Path(name).parts
-        #print(x)
-        full_dir = 'Movies'
+        outdir = pathlib.Path(name).parts
+        #print(x[-2])
+        full_dir = outdir[-2] #'Movies'
         #full_dir=os.path.join(x[2],
         #for d in dirs.split('/'):
         #    full_dir = os.path.join(full_dir, d)
