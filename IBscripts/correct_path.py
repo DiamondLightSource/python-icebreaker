@@ -17,7 +17,9 @@ def correct(ctf_star, all_dir, ending):
         dirs, mic_file = os.path.split(name)
         outdir = pathlib.Path(name).parts
         #print(x[-2])
-        full_dir = outdir[-2] #'Movies'
+        xhead, xtail = os.path.split(name)
+        #print(xhead)
+        full_dir = xhead#outdir[-2] #'Movies'
         #full_dir=os.path.join(x[2],
         #for d in dirs.split('/'):
         #    full_dir = os.path.join(full_dir, d)

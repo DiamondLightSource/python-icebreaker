@@ -46,14 +46,16 @@ def main(starfile, mic_path):
     for k in range(num_mics):
         print(f'{k+1} / {num_mics}')
         mic = micrographs_unique[k]
-        ##print(mic)
+        #print(mic)
         # im_path = os.path.join(mic_path, os.path.split(
         #         mic[:-4])[2:] + '_grouped.mrc')
         split_path = splitall(mic[:-4] + '_grouped.mrc')
+        #print(split_path)
         im_path = os.path.join(mic_path, *split_path)
+        #print(im_path)
         mic_path_new = os.path.dirname(mic_path)       
-        im_path2 = os.path.join(mic_path_new, split_path[-2], split_path[-1])
-        print(im_path2)
+        im_path2 = os.path.join(mic_path_new, *split_path)
+        #print(im_path2)
         with mrcfile.open(im_path2, 'r+', permissive=True) as mrc:
             micro_now = mrc.data
 

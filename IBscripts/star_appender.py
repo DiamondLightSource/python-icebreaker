@@ -47,10 +47,11 @@ def mic_star(starfile, job, mode):
         row = table[i]
         new_row = list(row)
         mic_name = list(column[i])[0]
-
+        path_head, path_tail = os.path.split(mic_name)
         mic_name2 = Path(mic_name).parts
-        mic_name_new = os.path.join(mic_name2[-2], mic_name2[-1][:-4] + f'_{mode}ed.mrc')
+        #mic_name_new = os.path.join(mic_name2[-2], mic_name2[-1][:-4] + f'_{mode}ed.mrc')
          
+        mic_name_new = os.path.join(path_head, path_tail[:-4] + f'_{mode}ed.mrc')
         new_row.insert(0, os.path.join(job, mic_name_new))
         
         loop.add_row(new_row)  # update temp new table with all data
