@@ -2,16 +2,31 @@ import gemmi
 import os
 from pathlib import Path
 
-def update_star(starfile, ice_groups):
-    in_doc = gemmi.cif.read_file(starfile)
-    block = in_doc.find_block('particles')
-    new_document = gemmi.cif.Document()
-    block_one = new_document.add_new_block('particles')
+
+def get_table(block):
     for x in block:
         table = x.loop
 
     tags = table.tags
     table = block.find(tags)
+
+    return table, tags
+
+
+def update_star(starfile, ice_groups):
+    in_doc = gemmi.cif.read_file(starfile)
+    block_optics = in_doc.find_block('optics')
+    block = in_doc.find_block('particles')
+    new_document = gemmi.cif.Document()
+    block_one_optics = new_document.add_new_block('optics')
+    block_one = new_document.add_new_block('particles')
+
+    table_optics, tags_optics = get_table(block_one_optics)  # optics
+    loop = block_one.init_loop('', tags_optics)  # make temp new table
+    for row in table_optics:
+        loop.add_row(list(row))
+
+    table, tags = get_table(block_one)  # particles
 
     # add new tag: named this to work in relion, but really it is
     # ice group for each particle (_ibIceGroup)
