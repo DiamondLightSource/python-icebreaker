@@ -3,36 +3,39 @@ import os
 from pathlib import Path
 
 
-def get_table(block):
-    for x in block:
-        table = x.loop
+def update_star(starfile, ice_groups):
+    new_document = gemmi.cif.Document()
+    in_doc = gemmi.cif.read_file(starfile)
+    block_optics = in_doc.find_block('optics')
+    if block_optics is not None:
+        block_new_optics = new_document.add_new_block('optics')
+
+        for item in block_optics:
+            if item.loop is not None:
+                table_optics = item.loop
+
+        tags_optics = table_optics.tags
+        table_optics = block_optics.find(tags_optics)
+        loop_optics = block_new_optics.init_loop('', tags_optics)  # make temp new table
+
+        for row in table_optics:
+            loop_optics.add_row(list(row))
+
+    block = in_doc.find_block('particles')
+    block_new_particles = new_document.add_new_block('particles')
+
+    for item in block:
+        if item.loop is not None:
+            table = item.loop
 
     tags = table.tags
     table = block.find(tags)
-
-    return table, tags
-
-
-def update_star(starfile, ice_groups):
-    in_doc = gemmi.cif.read_file(starfile)
-    block_optics = in_doc.find_block('optics')
-    block = in_doc.find_block('particles')
-    new_document = gemmi.cif.Document()
-    block_one_optics = new_document.add_new_block('optics')
-    block_one = new_document.add_new_block('particles')
-
-    table_optics, tags_optics = get_table(block_one_optics)  # optics
-    loop = block_one.init_loop('', tags_optics)  # make temp new table
-    for row in table_optics:
-        loop.add_row(list(row))
-
-    table, tags = get_table(block_one)  # particles
 
     # add new tag: named this to work in relion, but really it is
     # ice group for each particle (_ibIceGroup)
     #tags.append('_rlnHelicalTubeID')
     tags.append('_ibIceGroup')
-    loop = block_one.init_loop('', tags)  # make temp new table
+    loop = block_new_particles.init_loop('', tags)  # make temp new table
     for i in range(len(table)):
         row = table[i]
         new_row = list(row)
@@ -47,8 +50,10 @@ def mic_star(starfile, job, mode):
     block = in_doc.find_block('micrographs')
     new_document = gemmi.cif.Document()
     block_one = new_document.add_new_block('micrographs')
-    for x in block:
-        table = x.loop
+
+    for item in block:
+        if item.loop is not None:
+            table = item.loop
 
     tags = table.tags
     tags.remove('_rlnMicrographName')
@@ -75,7 +80,8 @@ def mic_star(starfile, job, mode):
 
 
 if __name__ == '__main__':
-    starfile = '/home/lexi/Documents/Diamond/ICEBREAKER/test_data/corrected_micrographs.star'
-    job = 'External'
-    mode = 'flatten'
-    mic_star(starfile, job, mode)
+    # starfile = '/home/lexi/Documents/Diamond/ICEBREAKER/test_data/corrected_micrographs.star'
+    # job = 'External'
+    # mode = 'flatten'
+    # mic_star(starfile, job, mode)
+
