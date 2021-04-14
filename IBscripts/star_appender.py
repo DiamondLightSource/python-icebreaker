@@ -80,8 +80,7 @@ def mic_star(starfile, job, mode):
 
 
 if __name__ == '__main__':
-    # starfile = '/home/lexi/Documents/Diamond/ICEBREAKER/test_data/corrected_micrographs.star'
-    # job = 'External'
-    # mode = 'flatten'
-    # mic_star(starfile, job, mode)
-
+    starfile = '/home/lexi/Documents/Diamond/ICEBREAKER/test_data/corrected_micrographs.star'
+    job = 'External'
+    mode = 'flatten'
+    mic_star(starfile, job, mode)
