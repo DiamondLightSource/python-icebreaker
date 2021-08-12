@@ -35,6 +35,7 @@ def main(starfile, mic_path):
     micrographs_used = data_as_dict['_rlnmicrographname']
     #print(micrographs_used)  
     micrographs_unique = list(set(micrographs_used))
+    micrographs_unique.sort()
     num_mics = len(micrographs_unique)
 
     mic_coord = collections.OrderedDict()
