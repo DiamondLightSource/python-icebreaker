@@ -23,14 +23,14 @@ files = sorted(files)
 vector_data = []
 r=10000
 
-print('path','min','q1','q2=median','q3','max')
+print('path,','min,','q1,','q2=median,','q3,','max')
 for img_path in files:
 	with mrcfile.open(img_path, 'r', permissive=True) as mrc:
 		img = mrc.data
 		if(np.isnan(np.sum(img))):
 			continue
 		else:
-			print(img_path[:-4],int(np.min(img)*r),int(np.quantile(img,0.25)*r),int(np.median(img)*r),int(np.quantile(img,0.75)*r),int(np.max(img)*r))
+			print(img_path[:-4]+',',str(int(np.min(img)*r))+',',str(int(np.quantile(img,0.25)*r))+',',str(int(np.median(img)*r))+',',str(int(np.quantile(img,0.75)*r))+',',int(np.max(img)*r))
 
 sys.stdout = orig_stdout
 f.close()
