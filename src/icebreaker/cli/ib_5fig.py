@@ -14,7 +14,7 @@ import shutil
 import gemmi
 import sys
 
-from IBscripts import five_figures
+from icebreaker import five_figures
 
 def run_job(project_dir, job_dir, args_list):
     parser = argparse.ArgumentParser()
