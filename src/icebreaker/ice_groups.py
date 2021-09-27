@@ -8,7 +8,7 @@ import numpy as np
 import gemmi
 import json
 
-from IBscripts import star_appender
+from icebreaker import star_appender
 
 
 def splitall(path):

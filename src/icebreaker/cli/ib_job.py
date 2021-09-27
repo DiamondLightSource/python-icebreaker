@@ -17,10 +17,10 @@ import shutil
 import gemmi
 import sys
 
-from IBscripts import correct_path
-from IBscripts import star_appender
-from IBscripts import icebreaker_equalize_multi as ib_equal
-from IBscripts import icebreaker_icegroups_multi as ib_group
+from icebreaker import correct_path
+from icebreaker import star_appender
+from icebreaker import icebreaker_equalize_multi as ib_equal
+from icebreaker import icebreaker_icegroups_multi as ib_group
 
 
 def run_job(project_dir, job_dir, args_list, mode, cpus):
