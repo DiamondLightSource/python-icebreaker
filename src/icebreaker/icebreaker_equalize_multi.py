@@ -10,10 +10,10 @@ import numpy as np
 import os
 from multiprocessing import Pool
 
-from IBscripts import filter_designer as fd
-from IBscripts import window_mean as wm
-from IBscripts import local_mask as lm
-from IBscripts import KNN_segmenter as KNN_seg
+from icebreaker import filter_designer as fd
+from icebreaker import window_mean as wm
+from icebreaker import local_mask as lm
+from icebreaker import KNN_segmenter as KNN_seg
 
 
 def load_img(img_path):

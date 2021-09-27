@@ -16,7 +16,7 @@ import shutil
 import gemmi
 import sys
 
-from IBscripts import ice_groups as ib_igroups
+from icebreaker import ice_groups as ib_igroups
 
 
 def run_job(project_dir, job_dir, args_list):

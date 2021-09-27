@@ -12,11 +12,11 @@ import time
 
 from multiprocessing import Pool
 
-from IBscripts import filter_designer as fd
-from IBscripts import window_mean as wm
-from IBscripts import KNN_segmenter as KNN_seg
-from IBscripts import original_mask as om
-from IBscripts import original_mask_fast as omf
+from icebreaker import filter_designer as fd
+from icebreaker import window_mean as wm
+from icebreaker import KNN_segmenter as KNN_seg
+from icebreaker import original_mask as om
+from icebreaker import original_mask_fast as omf
 
 def load_img(img_path):
     with mrcfile.open(img_path, 'r', permissive=True) as mrc:
