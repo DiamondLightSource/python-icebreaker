@@ -121,4 +121,5 @@ def main(indir, cpus):
 
 if __name__ == "__main__":
     indir = sys.argv[1]
+    batch_size = sys.argv[2]
     main(indir, batch_size)
