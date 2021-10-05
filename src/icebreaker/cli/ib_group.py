@@ -31,21 +31,24 @@ def run_job(project_dir, job_dir, args_list):
         lines = [line.rstrip() for line in f]
     group_job = lines[1]
 
-    ib_igroups.main(os.path.join(project_dir, parts_star),
-                    os.path.join(project_dir, group_star))
+    ib_igroups.main(
+        os.path.join(project_dir, parts_star), os.path.join(project_dir, group_star)
+    )
 
     # Writing a star file for Relion
-    part_doc = open('ib_icegroups.star', 'w')
+    part_doc = open("ib_icegroups.star", "w")
     part_doc.write(os.path.join(project_dir, parts_star))
     part_doc.write(os.path.join(project_dir, group_star))
     part_doc.close()
 
     # Required star file
     out_doc = gemmi.cif.Document()
-    output_nodes_block = out_doc.add_new_block('output_nodes')
-    loop = output_nodes_block.init_loop('', ['_rlnPipeLineNodeName', '_rlnPipeLineNodeType'])
-    loop.add_row([os.path.join(job_dir, 'particles.star'), '5'])
-    out_doc.write_file('RELION_OUTPUT_NODES.star')
+    output_nodes_block = out_doc.add_new_block("output_nodes")
+    loop = output_nodes_block.init_loop(
+        "", ["_rlnPipeLineNodeName", "_rlnPipeLineNodeType"]
+    )
+    loop.add_row([os.path.join(job_dir, "particles.star"), "5"])
+    out_doc.write_file("RELION_OUTPUT_NODES.star")
 
 
 def main():
@@ -60,15 +63,16 @@ def main():
     job_dir = known_args.out_dir
     try:
         os.mkdir(job_dir)
-    except FileExistsError: pass
+    except FileExistsError:
+        pass
     os.chdir(job_dir)
     try:
         run_job(project_dir, job_dir, other_args)
     except:
-        open('RELION_JOB_EXIT_FAILURE', 'w').close()
+        open("RELION_JOB_EXIT_FAILURE", "w").close()
         raise
     else:
-        open('RELION_JOB_EXIT_SUCCESS', 'w').close()
+        open("RELION_JOB_EXIT_SUCCESS", "w").close()
 
 
 if __name__ == "__main__":
