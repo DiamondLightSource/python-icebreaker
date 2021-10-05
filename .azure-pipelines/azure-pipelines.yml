@@ -21,7 +21,7 @@ stages:
           versionSpec: 3.9
 
       - bash: |
-          python syntax-validation.yml
+          python syntax-validation.py
         displayName: Syntax validation
       - bash: |
           pip install --disable-pip-version-check flake8
