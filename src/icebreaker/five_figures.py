@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import mrcfile
 import cv2
-import os
 import seaborn as sns
 from pathlib import Path
 
