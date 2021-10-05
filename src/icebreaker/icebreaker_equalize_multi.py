@@ -56,8 +56,7 @@ def equalize_im(img, x_patches, y_patches, num_of_segments):
     KNNsegmented = KNN_seg.segmenter(rolled_resized, num_of_segments)
 
     # upscaled_region = cv2.resize(
-        KNNsegmented, (lowpass.shape[1], lowpass.shape[0]), interpolation=cv2.INTER_AREA
-    )
+    # KNNsegmented, (lowpass.shape[1], lowpass.shape[0]), interpolation=cv2.INTER_AREA)
 
     regions_vals = np.unique(KNNsegmented)
     averaged_loc = np.zeros(
