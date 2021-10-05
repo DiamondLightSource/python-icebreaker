@@ -1,11 +1,11 @@
 import sys
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+# import matplotlib.pyplot as plt
+# from mpl_toolkits.mplot3d import Axes3D
 import mrcfile
-import cv2
+# import cv2
 import os
-import seaborn as sns
+# import seaborn as sns
 
 
 def main(mic_path):
@@ -22,7 +22,7 @@ def main(mic_path):
             continue
     # files = files.sort()
     files = sorted(files)
-    vector_data = []
+    # vector_data = []
     r = 10000
 
     print("path,", "min,", "q1,", "q2=median,", "q3,", "max")

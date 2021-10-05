@@ -15,7 +15,7 @@ import os.path
 import shutil
 
 import gemmi
-import sys
+# import sys
 
 from icebreaker import correct_path
 from icebreaker import star_appender

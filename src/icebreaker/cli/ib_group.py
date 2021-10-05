@@ -8,13 +8,13 @@ Run in main Relion project directory
 """
 
 import argparse
-import json
+# import json
 import os
 import os.path
-import shutil
+# import shutil
 
 import gemmi
-import sys
+# import sys
 
 from icebreaker import ice_groups as ib_igroups
 
@@ -29,7 +29,7 @@ def run_job(project_dir, job_dir, args_list):
     print(group_star)
     with open(group_star) as f:
         lines = [line.rstrip() for line in f]
-    group_job = lines[1]
+    # group_job = lines[1]
 
     ib_igroups.main(
         os.path.join(project_dir, parts_star), os.path.join(project_dir, group_star)

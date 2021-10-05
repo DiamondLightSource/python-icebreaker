@@ -12,7 +12,7 @@ import os.path
 import shutil
 
 import gemmi
-import sys
+# import sys
 
 from icebreaker import five_figures
 

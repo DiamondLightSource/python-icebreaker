@@ -58,9 +58,9 @@ def ice_grouper(img, x_patches, y_patches, num_of_segments):
     rolled_resized = cv2.resize(rolled, (185, 190), interpolation=cv2.INTER_AREA)
     rolled_resized = cv2.GaussianBlur(rolled_resized, (5, 5), 0)
     KNNsegmented = KNN_seg.segmenter(rolled_resized, num_of_segments)
-    #upscaled_region = cv2.resize(
+    # upscaled_region = cv2.resize(
     #    KNNsegmented, (lowpass.shape[1], lowpass.shape[0]), interpolation=cv2.INTER_AREA
-    #)
+    # )
 
     regions_vals = np.unique(KNNsegmented)
     averaged_loc = np.zeros(

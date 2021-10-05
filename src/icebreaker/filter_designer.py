@@ -1,7 +1,7 @@
 import mrcfile
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 def load_img(img_path):
@@ -40,7 +40,7 @@ def lowpass(img, pixel_size, lowcut, edge_type, falloff, lowpass=True):
         mask_edge = mask
     filter[:, :, 0] = mask_edge
     filter[:, :, 1] = mask_edge
-    if lowpass == False:
+    if lowpass is False:
         filter = 1 - filter
     # print(img.shape)
     # print(filter.shape)
@@ -63,7 +63,7 @@ def bandpass(
     crow, ccol = int(rows / 2), int(cols / 2)  # center
     filter = np.zeros((rows, cols, 2), np.float32)
 
-    mask_bandpass = np.zeros((rows, cols, 2), np.float32)
+    # mask_bandpass = np.zeros((rows, cols, 2), np.float32)
 
     maskin = np.zeros((rows, cols), np.float32)
     maskout = np.zeros((rows, cols), np.float32)
@@ -114,7 +114,7 @@ def bandpass(
 
     filter[:, :, 0] = bandpass
     filter[:, :, 1] = bandpass
-    if bandpass_type == False:
+    if bandpass_type is False:
         filter = 1 - filter
     return filter
 

@@ -1,20 +1,19 @@
 import sys
-import os
 import mrcfile
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+# import cv2
+# import numpy as np
+# import matplotlib.pyplot as plt
+# from mpl_toolkits.mplot3d import Axes3D
 import os
-from scipy import ndimage, misc
-import icebreaker.filter_designer as fd
-import icebreaker.filter_designer_not_normalized as fdnn
-import icebreaker.window_mean as wm
-import icebreaker.show_gradient as sg
-import icebreaker.local_mask as lm
-import icebreaker.KNN_segmenter as KNN_seg
-import icebreaker.average_mask as am
-import icebreaker.original_mask as om
+# from scipy import ndimage, misc
+# import icebreaker.filter_designer as fd
+# import icebreaker.filter_designer_not_normalized as fdnn
+# import icebreaker.window_mean as wm
+# import icebreaker.show_gradient as sg
+# import icebreaker.local_mask as lm
+# import icebreaker.KNN_segmenter as KNN_seg
+# import icebreaker.average_mask as am
+# import icebreaker.original_mask as om
 
 x_patches = 40
 y_patches = 40
