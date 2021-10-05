@@ -21,11 +21,11 @@ stages:
           versionSpec: 3.9
 
       - bash: |
-          python .azure-pipelines/syntax-validation.py
+          python syntax-validation.py
         displayName: Syntax validation
       - bash: |
           pip install --disable-pip-version-check flake8
-          python .azure-pipelines/flake8-validation.py
+          python flake8-validation.py
         displayName: Flake8 validation
 - stage: build
   displayName: Build
