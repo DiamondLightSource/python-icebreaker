@@ -49,7 +49,8 @@ for filename in os.listdir(dir):
     if filename.endswith(".mrc"):
         filelist.append(filename)
         print(filelist)
-    # outputs.append(str(filename[:-4]) +'_'+str(x_patches)+'_'+str(y_patches)+'_'+str(num_of_segments)+'.mrc')
+    # outputs.append(str(filename[:-4]) +'_'+str(x_patches)+'_'
+    # +str(y_patches)+'_'+str(num_of_segments)+'.mrc')
     else:
         continue
 

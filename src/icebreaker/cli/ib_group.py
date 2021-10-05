@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 External job for calling IceBreaker grouping within Relion 3.1
-in_parts is input star file from relion picking job 
+in_parts is input star file from relion picking job
 in_mics is previous grouping job directory
 
 Run in main Relion project directory
@@ -27,8 +27,8 @@ def run_job(project_dir, job_dir, args_list):
     parts_star = args.in_parts
     group_star = os.path.join(project_dir, args.in_mics)
     print(group_star)
-    with open(group_star) as f:
-        lines = [line.rstrip() for line in f]
+    # with open(group_star) as f:
+        # lines = [line.rstrip() for line in f]
     # group_job = lines[1]
 
     ib_igroups.main(

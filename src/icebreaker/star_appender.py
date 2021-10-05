@@ -1,6 +1,6 @@
 import gemmi
 import os
-from pathlib import Path
+# from pathlib import Path
 
 
 def update_star(starfile, ice_groups):

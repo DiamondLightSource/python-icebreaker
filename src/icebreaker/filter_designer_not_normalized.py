@@ -63,7 +63,7 @@ def bandpass(
     crow, ccol = int(rows / 2), int(cols / 2)  # center
     filter = np.zeros((rows, cols, 2), np.float32)
 
-    #mask_bandpass = np.zeros((rows, cols, 2), np.float32)
+    # mask_bandpass = np.zeros((rows, cols, 2), np.float32)
 
     maskin = np.zeros((rows, cols), np.float32)
     maskout = np.zeros((rows, cols), np.float32)

@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
-#import matplotlib.pyplot as plt
-#import mrcfile
+# import matplotlib.pyplot as plt
+# import mrcfile
 
 
 def original_mask(lowpass1, img2, val, original, lowpass12):
@@ -34,7 +34,7 @@ def original_mask(lowpass1, img2, val, original, lowpass12):
     # x_max1 = np.max(lowpass1[np.nonzero(up_reg3)])
 
     # Negative of ROI
-    cover3 = 1 - reg3
+    # cover3 = 1 - reg3
     # Upscaled negative
     # up_cover3 = cv2.resize(cover3, (lowpass1.shape[1], lowpass1.shape[0]))
     mask3 = up_reg3
