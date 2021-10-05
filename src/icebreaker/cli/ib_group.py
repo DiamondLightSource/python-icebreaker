@@ -28,7 +28,7 @@ def run_job(project_dir, job_dir, args_list):
     group_star = os.path.join(project_dir, args.in_mics)
     print(group_star)
     # with open(group_star) as f:
-        # lines = [line.rstrip() for line in f]
+    # lines = [line.rstrip() for line in f]
     # group_job = lines[1]
 
     ib_igroups.main(
@@ -68,7 +68,7 @@ def main():
     os.chdir(job_dir)
     try:
         run_job(project_dir, job_dir, other_args)
-    except:
+    except Exception:
         open("RELION_JOB_EXIT_FAILURE", "w").close()
         raise
     else:

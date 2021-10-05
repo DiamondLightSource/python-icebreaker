@@ -45,7 +45,7 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
     try:
         with open("done_mics.txt", "r") as f:
             done_mics = f.read().splitlines()
-    except:
+    except Exception:
         done_mics = []
     for micrograph in data_as_dict["_rlnmicrographname"]:
         if os.path.split(micrograph)[-1] not in done_mics:
@@ -113,7 +113,7 @@ def main():
     os.chdir(job_dir)
     try:
         run_job(project_dir, job_dir, other_args, mode, cpus)
-    except:
+    except Exception:
         open("RELION_JOB_EXIT_FAILURE", "w").close()
         raise
     else:
