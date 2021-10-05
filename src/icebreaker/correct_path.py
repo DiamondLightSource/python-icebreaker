@@ -15,7 +15,7 @@ def correct(ctf_star, all_dir, ending):
     for i in range(len(data_as_dict["_rlnmicrographname"])):
         name = data_as_dict["_rlnmicrographname"][i]
         dirs, mic_file = os.path.split(name)
-        outdir = pathlib.Path(name).parts
+        #outdir = pathlib.Path(name).parts
         # print(x[-2])
         xhead, xtail = os.path.split(name)
         # print(xhead)
@@ -33,5 +33,5 @@ def correct(ctf_star, all_dir, ending):
                     os.path.join(full_dir, picked_star),
                 )
             except FileNotFoundError:
-                print(f"Warning - Flattened Mic not found (Most likely already moved)")
+                print("Warning - Flattened Mic not found (Most likely already moved)")
                 pass

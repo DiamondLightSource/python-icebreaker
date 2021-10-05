@@ -1,7 +1,6 @@
 import collections
 import sys
 import os
-import glob
 import mrcfile
 import numpy as np
 
@@ -51,7 +50,7 @@ def main(starfile, mic_path):
         #         mic[:-4])[2:] + '_grouped.mrc')
         split_path = splitall(mic[:-4] + "_grouped.mrc")
         # print(split_path)
-        im_path = os.path.join(mic_path, *split_path)
+        # im_path = os.path.join(mic_path, *split_path)
         # print(im_path)
         mic_path_new = os.path.dirname(mic_path)
         im_path2 = os.path.join(mic_path_new, *split_path)

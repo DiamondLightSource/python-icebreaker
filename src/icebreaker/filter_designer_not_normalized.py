@@ -40,7 +40,7 @@ def lowpass(img, pixel_size, lowcut, edge_type, falloff, lowpass=True):
         mask_edge = mask
     filter[:, :, 0] = mask_edge
     filter[:, :, 1] = mask_edge
-    if lowpass == False:
+    if lowpass is False:
         filter = 1 - filter
     # print(img.shape)
     # print(filter.shape)
@@ -63,7 +63,7 @@ def bandpass(
     crow, ccol = int(rows / 2), int(cols / 2)  # center
     filter = np.zeros((rows, cols, 2), np.float32)
 
-    mask_bandpass = np.zeros((rows, cols, 2), np.float32)
+    #mask_bandpass = np.zeros((rows, cols, 2), np.float32)
 
     maskin = np.zeros((rows, cols), np.float32)
     maskout = np.zeros((rows, cols), np.float32)
@@ -114,7 +114,7 @@ def bandpass(
 
     filter[:, :, 0] = bandpass
     filter[:, :, 1] = bandpass
-    if bandpass_type == False:
+    if bandpass_type is False:
         filter = 1 - filter
     return filter
 
@@ -127,13 +127,13 @@ def filtering(img, filter_type):
     f_ishift = np.fft.ifftshift(fshift)
     img_back = cv2.idft(f_ishift)
     img_back = cv2.magnitude(img_back[:, :, 0], img_back[:, :, 1])
-    b0 = str(np.max(img))
-    b01 = str(np.mean(img))
-    b02 = str(np.min(img))
+    #b0 = str(np.max(img))
+    #b01 = str(np.mean(img))
+    #b02 = str(np.min(img))
 
-    b1 = str(np.max(img_back))
-    b12 = str(np.mean(img_back))
-    b2 = str(np.min(img_back))
+    #b1 = str(np.max(img_back))
+    #b12 = str(np.mean(img_back))
+    #b2 = str(np.min(img_back))
     # cv2.normalize(img_back,  img_back, 0.0, 255.0, cv2.NORM_MINMAX)
     # img_back = img_back.astype(np.uint8)
     # cv2.equalizeHist(img_back,img_back)

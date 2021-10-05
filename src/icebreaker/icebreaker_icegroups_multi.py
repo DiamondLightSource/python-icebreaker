@@ -9,14 +9,12 @@ import numpy as np
 import os
 import time
 
-# from scipy import ndimage
 
 from multiprocessing import Pool
 
 from icebreaker import filter_designer as fd
 from icebreaker import window_mean as wm
 from icebreaker import KNN_segmenter as KNN_seg
-from icebreaker import original_mask as om
 from icebreaker import original_mask_fast as omf
 
 
@@ -44,7 +42,7 @@ def multigroup(filelist_full):
 
     # with mrcfile.new((path1+str(filename[:-4]) +'_'+str(x_patches)+'x'+str(y_patches)+'x'+str(num_of_segments)+'_original_mean'+'.mrc'), overwrite=True) as out_image:
     with mrcfile.new(
-        os.path.join(splitpath[0] + "/grouped/" + splitpath[1][:-4] + f"_grouped.mrc"),
+        os.path.join(splitpath[0] + "/grouped/" + splitpath[1][:-4] + "_grouped.mrc"),
         overwrite=True,
     ) as out_image:  # Make fstring
         out_image.set_data(final_image)
@@ -60,9 +58,9 @@ def ice_grouper(img, x_patches, y_patches, num_of_segments):
     rolled_resized = cv2.resize(rolled, (185, 190), interpolation=cv2.INTER_AREA)
     rolled_resized = cv2.GaussianBlur(rolled_resized, (5, 5), 0)
     KNNsegmented = KNN_seg.segmenter(rolled_resized, num_of_segments)
-    upscaled_region = cv2.resize(
-        KNNsegmented, (lowpass.shape[1], lowpass.shape[0]), interpolation=cv2.INTER_AREA
-    )
+    #upscaled_region = cv2.resize(
+    #    KNNsegmented, (lowpass.shape[1], lowpass.shape[0]), interpolation=cv2.INTER_AREA
+    #)
 
     regions_vals = np.unique(KNNsegmented)
     averaged_loc = np.zeros(

@@ -2,9 +2,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import mrcfile
-import cv2
 import os
-import seaborn as sns
 import argparse
 
 
