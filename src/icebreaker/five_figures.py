@@ -11,7 +11,7 @@ from pathlib import Path
 
 def main(mic_path):
     indir = mic_path
-    with open('five_figs_test.csv','w') as f:
+    with open('five_figs_test.csv', 'w') as f:
         files = [Path(indir / filename) for filename in Path(indir).glob('**/*')
                  if filename.suffix == '.mrc']
         r = 10000
