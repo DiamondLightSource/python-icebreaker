@@ -6,45 +6,28 @@ import mrcfile
 # import cv2
 import os
 # import seaborn as sns
+from pathlib import Path
 
 
 def main(mic_path):
-    orig_stdout = sys.stdout
-    indir = mic_path
-    f = open("five_figs_test.csv", "w")
-    sys.stdout = f
-    files = []
-    for filename in os.listdir(indir):
-        if filename.endswith(".mrc"):
-            finalpath = os.path.join(indir, filename)
-            files.append(finalpath)
-        else:
-            continue
-    # files = files.sort()
-    files = sorted(files)
-    # vector_data = []
-    r = 10000
+	indir = mic_path
+	with open('five_figs_test.csv','w') as f:
+		files = [Path(indir / filename) for filename in Path(indir).glob('**/*') if filename.suffix == '.mrc']
+		r = 10000
 
-    print("path,", "min,", "q1,", "q2=median,", "q3,", "max")
-    for img_path in files:
-        with mrcfile.open(img_path, "r", permissive=True) as mrc:
-            img = mrc.data
-            if np.isnan(np.sum(img)):
-                continue
-            else:
-                print(
-                    img_path[:-4] + ",",
-                    str(int(np.min(img) * r)) + ",",
-                    str(int(np.quantile(img, 0.25) * r)) + ",",
-                    str(int(np.median(img) * r)) + ",",
-                    str(int(np.quantile(img, 0.75) * r)) + ",",
-                    int(np.max(img) * r),
-                )
+		f.write("path,min,q1,q2=median,q3,max\n")
+		for img_path in sorted(files):
+			with mrcfile.open(img_path, 'r', permissive=True) as mrc:
+				img = mrc.data
+				if not np.isnan(np.sum(img)):
+					path = img_path[:-4]
+					min = int(np.min(img) * r)
+					q1 = int(np.quantile(img, 0.25) * r)
+					median = int(np.median(img) * r)
+					q3 = int(np.quantile(img, 0.75) * r)
+					max = int(np.max(img) * r)
+					f.write(f"{path},{min},{q1},{median},{q3},{max}")
 
-    sys.stdout = orig_stdout
-    f.close()
-
-
-if __name__ == "__main__":
-    mic_path = sys.argv[1]
-    main(mic_path)
+if __name__ == '__main__':
+	mic_path = sys.argv[1]
+	main(mic_path)
