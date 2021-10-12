@@ -46,9 +46,9 @@ def run_job(project_dir, job_dir, args_list):
         if os.path.split(micrograph)[-1] not in done_mics:
             os.link(os.path.join(project_dir, micrograph),
                     os.path.join('IB_input',
-                    micrograph))
+                    os.path.split(micrograph)[-1]))
 
-    five_figures.main("IB_input")
+    five_figures.main(str(project_dir))
     print("Done five figures")
 
     with open(
