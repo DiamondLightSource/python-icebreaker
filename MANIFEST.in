@@ -1,2 +1,2 @@
-recursive-include icebreaker *.py *.star
-
+include LICENSE
+recursive-include src/icebreaker *.py *.star
