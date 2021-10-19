@@ -27,7 +27,7 @@ def main(mic_path):
                     median = int(np.median(img) * r)
                     q3 = int(np.quantile(img, 0.75) * r)
                     max = int(np.max(img) * r)
-                    f.write(f"{path},{min},{q1},{median},{q3},{max}")
+                    f.write(f"{path},{min},{q1},{median},{q3},{max}\n")
 
 
 if __name__ == '__main__':

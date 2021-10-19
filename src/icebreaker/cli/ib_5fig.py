@@ -48,7 +48,7 @@ def run_job(project_dir, job_dir, args_list):
                     os.path.join('IB_input',
                     os.path.split(micrograph)[-1]))
 
-    five_figures.main(str(project_dir))
+    five_figures.main("IB_input")
     print("Done five figures")
 
     with open(
