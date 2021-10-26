@@ -11,13 +11,11 @@ import mrcfile
 from pathlib import Path
 
 
-def main(mic_path):
-    indir = mic_path
+def main(grouped_mic_dir):
     with open("five_figs_test.csv", "w") as f:
         files = [
             str(filename)
-            for filename in Path(indir).glob("**/*")
-            if filename.suffix == ".mrc"
+            for filename in Path(grouped_mic_dir).glob("**/*.mrc")
         ]
         r = 10000
 
@@ -36,5 +34,5 @@ def main(mic_path):
 
 
 if __name__ == "__main__":
-    mic_path = sys.argv[1]
-    main(mic_path)
+    grouped_mic_dir = sys.argv[1]
+    main(grouped_mic_dir)
