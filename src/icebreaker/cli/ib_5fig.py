@@ -45,10 +45,18 @@ def run_job(project_dir, job_dir, args_list):
         done_mics = []
 
     for micrograph in data_as_dict["_rlnmicrographname"]:
+        print(micrograph)
         if os.path.split(micrograph)[-1] not in done_mics:
+            micpath = pathlib.Path(micrograph)
+            link_path = pathlib.Path("IB_input") / pathlib.Path(
+                *list(micpath.parent.parts)[2:]
+            )
+            print(link_path)
+            if not link_path.exists():
+                link_path.mkdir(parents=True)
             os.link(
                 os.path.join(project_dir, micrograph),
-                os.path.join("IB_input", os.path.split(micrograph)[-1]),
+                os.path.join("IB_input", *list(micpath.parts[2:])),
             )
 
     five_figures.main(pathlib.Path(project_dir) / job_dir / "IB_input")
