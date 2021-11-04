@@ -34,8 +34,8 @@ def main(grouped_mic_dir: str, cpus: int = 1) -> None:
         p.starmap(_process_mrc, [(fl, csv_lines, lock, r) for fl in sorted(files)])
     with open("five_figs_test.csv", "w") as f:
         f.write("path,min,q1,q2=median,q3,max\n")
-        for l in csv_lines:
-            f.write(l)
+        for line in csv_lines:
+            f.write(line)
     return None
 
 
