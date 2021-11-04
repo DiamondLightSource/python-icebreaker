@@ -19,7 +19,7 @@ import gemmi
 from icebreaker import five_figures
 
 
-def run_job(project_dir, job_dir, args_list):
+def run_job(project_dir, job_dir, args_list, cpus):
     parser = argparse.ArgumentParser()
     parser.add_argument("--in_mics", help="Input: IB_grouped star file")
     args = parser.parse_args(args_list)
@@ -45,13 +45,11 @@ def run_job(project_dir, job_dir, args_list):
         done_mics = []
 
     for micrograph in data_as_dict["_rlnmicrographname"]:
-        print(micrograph)
         if os.path.split(micrograph)[-1] not in done_mics:
             micpath = pathlib.Path(micrograph)
             link_path = pathlib.Path("IB_input") / pathlib.Path(
                 *list(micpath.parent.parts)[2:]
             )
-            print(link_path)
             if not link_path.exists():
                 link_path.mkdir(parents=True)
             os.link(
@@ -59,7 +57,7 @@ def run_job(project_dir, job_dir, args_list):
                 os.path.join("IB_input", *list(micpath.parts[2:])),
             )
 
-    five_figures.main(pathlib.Path(project_dir) / job_dir / "IB_input")
+    five_figures.main(pathlib.Path(project_dir) / job_dir / "IB_input", cpus)
     print("Done five figures")
 
     with open(
@@ -84,7 +82,7 @@ def main():
     """Change to the job working directory, then call run_job()"""
     parser = argparse.ArgumentParser()
     parser.add_argument("--o", dest="out_dir", help="Output directory name")
-    parser.add_argument("--j", help="relion stuff...")
+    parser.add_argument("--j", help="relion stuff...", type=int)
     parser.add_argument("--pipeline_control", help="relion scheduler stuff...")
     known_args, other_args = parser.parse_known_args()
 
@@ -96,7 +94,7 @@ def main():
         pass
     os.chdir(job_dir)
     try:
-        run_job(project_dir, job_dir, other_args)
+        run_job(project_dir, job_dir, other_args, known_args.j)
     except Exception:
         open("RELION_JOB_EXIT_FAILURE", "w").close()
         raise
