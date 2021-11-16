@@ -17,9 +17,9 @@ def _process_mrc(img_path: str, csv_lines: list, lock: Lock, r: int) -> None:
             median = int(np.median(img) * r)
             q3 = int(np.quantile(img, 0.75) * r)
             max = int(np.max(img) * r)
-    lock.acquire()
-    csv_lines.append(f"{path},{min},{q1},{median},{q3},{max}\n")
-    lock.release()
+            lock.acquire()
+            csv_lines.append(f"{path},{min},{q1},{median},{q3},{max}\n")
+            lock.release()
     return None
 
 
