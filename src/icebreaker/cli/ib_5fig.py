@@ -57,7 +57,9 @@ def run_job(project_dir, job_dir, args_list, cpus):
                 os.path.join("IB_input", *list(micpath.parts[2:])),
             )
 
-    five_figures.main(pathlib.Path(project_dir) / job_dir / "IB_input", cpus)
+    five_figures.main(
+        pathlib.Path(project_dir) / job_dir / "IB_input", cpus, append=True
+    )
     print("Done five figures")
 
     with open(

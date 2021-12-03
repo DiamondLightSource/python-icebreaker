@@ -23,7 +23,7 @@ def _process_mrc(img_path: str, csv_lines: list, lock: Lock, r: int) -> None:
     return None
 
 
-def main(grouped_mic_dir: str, cpus: int = 1) -> None:
+def main(grouped_mic_dir: str, cpus: int = 1, append: bool = False) -> None:
     manager = Manager()
     lock = manager.Lock()
     files = [str(filename) for filename in Path(grouped_mic_dir).glob("**/*.mrc")]
@@ -32,10 +32,15 @@ def main(grouped_mic_dir: str, cpus: int = 1) -> None:
     csv_lines = manager.list()
     with Pool(cpus) as p:
         p.starmap(_process_mrc, [(fl, csv_lines, lock, r) for fl in sorted(files)])
-    with open("five_figs_test.csv", "w") as f:
-        f.write("path,min,q1,q2=median,q3,max\n")
-        for line in csv_lines:
-            f.write(line)
+    if append and Path("five_figs_test.csv").is_file():
+        with open("five_figs_test.csv", "a+") as f:
+            for line in csv_lines:
+                f.write(line)
+    else:
+        with open("five_figs_test.csv", "w") as f:
+            f.write("path,min,q1,q2=median,q3,max\n")
+            for line in csv_lines:
+                f.write(line)
     return None
 
 
