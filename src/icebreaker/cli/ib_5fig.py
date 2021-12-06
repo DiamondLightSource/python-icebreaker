@@ -57,15 +57,17 @@ def run_job(project_dir, job_dir, args_list, cpus):
                 os.path.join("IB_input", *list(micpath.parts[2:])),
             )
 
-    five_figures.main(pathlib.Path(project_dir) / job_dir / "IB_input", cpus)
+    five_figures.main(
+        pathlib.Path(project_dir) / job_dir / "IB_input", cpus, append=True
+    )
     print("Done five figures")
 
     with open(
         "done_mics.txt", "a+"
     ) as f:  # Done mics is to ensure that IB doesn't pick from already done mics
-        for micrograph in os.listdir("IB_input"):
-            if micrograph.endswith("mrc"):
-                f.write(micrograph + "\n")
+        for micrograph in pathlib.Path("./IB_input").glob("**/*"):
+            if micrograph.suffix == ".mrc":
+                f.write(micrograph.name + "\n")
 
     # Required star file
     out_doc = gemmi.cif.Document()
