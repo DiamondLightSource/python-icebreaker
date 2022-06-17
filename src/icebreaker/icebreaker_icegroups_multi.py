@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 import os
 import time
-
+import matplotlib.pyplot as plt
 
 from multiprocessing import Pool
 
@@ -17,6 +17,8 @@ from icebreaker import window_mean as wm
 from icebreaker import KNN_segmenter as KNN_seg
 from icebreaker import original_mask_fast as omf
 
+from sklearn.cluster import KMeans
+from sklearn.utils import shuffle
 
 def load_img(img_path):
     with mrcfile.open(img_path, "r", permissive=True) as mrc:
@@ -49,34 +51,43 @@ def multigroup(filelist_full):
     ) as out_image:  # Make fstring
         out_image.set_data(final_image)
 
+def recreate_image(codebook, labels, w, h):
+    ##"""Recreate the (compressed) image from the code book & labels"""
+    return codebook[labels].reshape(w, h)
 
 def ice_grouper(img, x_patches, y_patches, num_of_segments):
 
-    filter_mask = fd.lowpass(img, 0.85, 20, "cos", 50)
-    lowpass, mag = fd.filtering(img, filter_mask)
-    lowpass = cv2.GaussianBlur(lowpass, (45, 45), 0)
+    lowpass = img
+    lowpass = cv2.blur(lowpass,(40,40))#GaussianBlur(img, (45, 45))#, 0)
     lowpass12 = img
     rolled = wm.window(lowpass, x_patches, y_patches)
     rolled_resized = cv2.resize(rolled, (185, 190), interpolation=cv2.INTER_AREA)
-    rolled_resized = cv2.GaussianBlur(rolled_resized, (5, 5), 0)
-    KNNsegmented = KNN_seg.segmenter(rolled_resized, num_of_segments)
-    # upscaled_region = cv2.resize(
-    #    KNNsegmented, (lowpass.shape[1], lowpass.shape[0]), interpolation=cv2.INTER_AREA
-    # )
+    
+    a = np.reshape(rolled_resized, (185*190, -1))
+
+    ##b = cudf.DataFrame(a)
+    ##kmeans_float = KMeans(n_clusters=num_of_segments,max_iter=300,random_state=0,output_type='numpy')
+    kmeans_float = KMeans(n_clusters=num_of_segments,init='k-means++',random_state=0,max_iter = 300)
+    labels=kmeans_float.fit_predict(a)
+
+    KNNsegmented=recreate_image(kmeans_float.cluster_centers_, labels, 190, 185)
 
     regions_vals = np.unique(KNNsegmented)
     averaged_loc = np.zeros(
-        (lowpass.shape[0], lowpass.shape[1], num_of_segments), np.float32
+        (rolled_resized.shape[0], rolled_resized.shape[1], num_of_segments), np.float32
     )
-    res = np.zeros((lowpass.shape[0], lowpass.shape[1]), np.float32)
+    res = np.zeros((rolled_resized.shape[0], rolled_resized.shape[1]), np.float32)
     for i in range(len(regions_vals)):
-        averaged_loc[:, :, i] = omf.original_mask(
-            lowpass, KNNsegmented, regions_vals[i], img, lowpass12
+        averaged_loc[:, :, i] = omf.new_original_mask(
+            rolled_resized, KNNsegmented, regions_vals[i], rolled_resized, rolled
         )
         res[:, :] += averaged_loc[:, :, i]
 
-    final_image = res
-
+    up_res = cv2.resize(
+        res, (lowpass.shape[1], lowpass.shape[0]), interpolation=cv2.INTER_NEAREST
+    )
+    #up_res = cv2.blur(up_res,(20,20))
+    final_image = up_res
     return final_image
 
 
