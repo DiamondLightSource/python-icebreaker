@@ -15,12 +15,14 @@ import os.path
 import shutil
 
 import gemmi
-# import sys
 
 from icebreaker import correct_path
-from icebreaker import star_appender
 from icebreaker import icebreaker_equalize_multi as ib_equal
 from icebreaker import icebreaker_icegroups_multi as ib_group
+from icebreaker import star_appender
+
+# import sys
+
 
 
 def run_job(project_dir, job_dir, args_list, mode, cpus):

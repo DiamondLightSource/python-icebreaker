@@ -14,9 +14,10 @@ import shutil
 
 import gemmi
 
+from icebreaker import five_figures
+
 # import sys
 
-from icebreaker import five_figures
 
 
 def run_job(project_dir, job_dir, args_list, cpus):
