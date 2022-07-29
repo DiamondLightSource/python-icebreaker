@@ -19,7 +19,6 @@ from icebreaker import five_figures
 # import sys
 
 
-
 def run_job(project_dir, job_dir, args_list, cpus):
     parser = argparse.ArgumentParser()
     parser.add_argument("--in_mics", help="Input: IB_grouped star file")

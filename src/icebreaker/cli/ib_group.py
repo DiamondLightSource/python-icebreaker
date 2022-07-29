@@ -23,7 +23,6 @@ from icebreaker import ice_groups as ib_igroups
 # import sys
 
 
-
 def run_job(project_dir, job_dir, args_list):
     parser = argparse.ArgumentParser()
     parser.add_argument("--in_parts", help="Input: particle star file")

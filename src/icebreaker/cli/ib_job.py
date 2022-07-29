@@ -24,7 +24,6 @@ from icebreaker import star_appender
 # import sys
 
 
-
 def run_job(project_dir, job_dir, args_list, mode, cpus):
     parser = argparse.ArgumentParser()
     parser.add_argument("--in_mics", help="Input: Motion correction star file")
