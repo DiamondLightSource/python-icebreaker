@@ -48,3 +48,16 @@ To make it easier to get started running Icebreaker from Relion, you can use one
 4. Change the placeholder input names to select your input files
 5. Choose your running options and run the job as normal
 
+## Runnnig outside of RELION
+
+There are a number of command line tools which can be used outside of the RELION context. These are:
+
+```
+ib.micrographs_group 
+ib.micrographs_flatten 
+ib.particles_group
+ib.five_fig 
+```
+
+The functionality of these tools correspond, respectively, to `ib_job` in **group** mode, `ib_job` in **flatten** mode, `ib_group` and `ib_5fig`. 
+The required command line options can be seen by using the `--help` flag.
