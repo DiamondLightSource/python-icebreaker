@@ -8,9 +8,21 @@ in_mics is previous grouping job directory
  
 Run in main Relion project directory
 
+## Running as a RELION External job
+
+Icebreaker provides a number of command line tools that wrap the core functionality in a way that is friendly for the RELION External job. These tools are:
+
+```
+ib_job
+ib_group
+ib_5fig
+```
+
+If Icebreaker is installed in your Python environment then these can be used directly as the executables for a RELION External job. 
+
 ## Processing the micrographs
 
-To process the micrographs use the ib_job.py script 
+To process the micrographs use the `ib_job` command line tool 
 
 As an input, it takes a .star file with a list of micrographs to process, e.g. micrographs_ctf.star
 
@@ -23,7 +35,7 @@ The output from this job is a new set of micrographs.
 
 ## Processing the particles
 
-As 'Input micrographs' it takes micrographs 'grouped' with the previous script. As 'Input particles' any star file with particles from jobs like Extract particles, 2D classes, etc. It takes no additional parameters and this is single-threaded. As a result, additional parameter column (\_ibIceGroup) with estimated ice thickness value for each particle will be added.
+This is done using the `ib_group` command line tool. As 'Input micrographs' it takes micrographs 'grouped' with the previous script. As 'Input particles' any star file with particles from jobs like Extract particles, 2D classes, etc. As a result, additional parameter column (\_ibIceGroup) with estimated ice thickness value for each particle will be added.
 
 
 ## Using the job templates

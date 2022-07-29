@@ -14,7 +14,7 @@ data_joboptions_values
 loop_
 _rlnJobOptionVariable #1
 _rlnJobOptionValue #2
-    fn_exe ib_job.py
+    fn_exe ib_job
     in_mic input/micrographs.star
 param1_label       mode
 param1_value      group
