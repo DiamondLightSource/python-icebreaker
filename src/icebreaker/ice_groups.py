@@ -61,10 +61,12 @@ def main(starfile, mic_path):
         for part_ind in mic_coord[mic]:
             x1 = int(np.floor(data_as_dict["_rlncoordinatex"][part_ind]))
             y1 = int(np.floor(data_as_dict["_rlncoordinatey"][part_ind]))
-            if micro_now is not None:
+            try:
                 ice_groups.append(int(micro_now[y1][x1] * 10000))
-            else:
-                ice_groups.append(-1)
+            except ValueError:
+                print(f"warning, unable to append thickness value for particle at {x1= }, {y1= } in micrograph {mic}")
+                print(f"assigning -1 as icethickness value for this particle")
+            ice_groups.append(-1)
 
     star_appender.update_star(starfile, ice_groups)
 
