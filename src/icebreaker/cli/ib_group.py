@@ -29,7 +29,7 @@ def run_job(project_dir, job_dir, args_list):
     parser.add_argument("--in_mics", help="Input: previous ice_group job")
     args = parser.parse_args(args_list)
     parts_star = args.in_parts
-    group_star = os.path.join(project_dir, args.in_mics)
+    group_star = args.in_mics
     print(group_star)
     # with open(group_star) as f:
     # lines = [line.rstrip() for line in f]
