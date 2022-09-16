@@ -66,7 +66,7 @@ def main(starfile, mic_path):
             except ValueError:
                 print(f"warning, unable to append thickness value for particle at {x1= }, {y1= } in micrograph {mic}")
                 print(f"assigning -1 as icethickness value for this particle")
-            ice_groups.append(-1)
+                ice_groups.append(-1)
 
     star_appender.update_star(starfile, ice_groups)
 
