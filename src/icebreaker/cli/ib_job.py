@@ -26,15 +26,21 @@ from icebreaker import star_appender
 
 def run_job(project_dir, job_dir, args_list, mode, cpus):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--in_mics", help="Input: Motion correction star file")
+    input_group = parser.add_mutually_exclusive_group(required=True)
+    input_group.add_argument("--in_mics", help="Input: Motion correction star file")
+    input_group.add_argument("--single_mic", help="Single motion corrected micrograph")
     args = parser.parse_args(args_list)
-    starfile = args.in_mics
 
-    # Reading the micrographs star file from relion
-    ctf_star = os.path.join(project_dir, starfile)
-    in_doc = gemmi.cif.read_file(ctf_star)
+    if args.in_mics:
+        starfile = args.in_mics
 
-    data_as_dict = json.loads(in_doc.as_json())["micrographs"]
+        # Reading the micrographs star file from relion
+        ctf_star = os.path.join(project_dir, starfile)
+        in_doc = gemmi.cif.read_file(ctf_star)
+
+        data_as_dict = json.loads(in_doc.as_json())["micrographs"]
+    else:
+        data_as_dict = {"_rlnmicrographname": [args.single_mic]}
 
     try:
         os.mkdir("IB_input")
@@ -68,7 +74,7 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
             if micrograph.endswith("mrc"):
                 f.write(micrograph + "\n")
 
-    correct_path.correct(ctf_star, os.path.join("IB_input", f"{mode}ed"), f"{mode}ed")
+    correct_path.correct(data_as_dict, os.path.join("IB_input", f"{mode}ed"), f"{mode}ed")
 
     # Writing a star file for Relion
     # part_doc = open('ib_equalize.star', 'w')
@@ -76,7 +82,8 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
     # part_doc.write(job_dir)
     # part_doc.close()
 
-    star_appender.mic_star(ctf_star, job_dir, mode)
+    if args.in_mics:
+        star_appender.mic_star(ctf_star, job_dir, mode)
 
     # Required star file
     out_doc = gemmi.cif.Document()

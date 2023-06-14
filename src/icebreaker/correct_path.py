@@ -9,22 +9,14 @@ import pathlib
 import shutil
 
 
-def correct(ctf_star, all_dir, ending):
-    in_doc = gemmi.cif.read_file(ctf_star)
-    data_as_dict = json.loads(in_doc.as_json())["micrographs"]
-
-    for i in range(len(data_as_dict["_rlnmicrographname"])):
+def correct(data_as_dict, all_dir, ending):
+   for i in range(len(data_as_dict["_rlnmicrographname"])):
         name = data_as_dict["_rlnmicrographname"][i]
-        dirs, mic_file = os.path.split(name)
-        # outdir = pathlib.Path(name).parts
-        # print(x[-2])
-        xhead, xtail = os.path.split(name)
-        # print(xhead)
-        full_dir = xhead  # outdir[-2] #'Movies'
-        # full_dir=os.path.join(x[2],
-        # for d in dirs.split('/'):
-        #    full_dir = os.path.join(full_dir, d)
-        #    print(d)
+        # New name needs to be extracted from inputs of form
+        # JobName/JobNumber/path/to/file.suffix
+        name_parts = list(pathlib.Path(name).parts)
+        mic_file = name_parts[-1]
+        full_dir = "/".join(name_parts[2:-1])
         pathlib.Path(full_dir).mkdir(parents=True, exist_ok=True)
         picked_star = os.path.splitext(mic_file)[0] + f"_{ending}.mrc"
         if os.path.isfile(os.path.join(all_dir, picked_star)):
