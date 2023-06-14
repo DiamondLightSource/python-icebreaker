@@ -27,7 +27,6 @@ def splitall(path):
 
 
 def main(starfile, mic_path):
-
     in_doc = gemmi.cif.read_file(starfile)
     data_as_dict = json.loads(in_doc.as_json())["particles"]
 

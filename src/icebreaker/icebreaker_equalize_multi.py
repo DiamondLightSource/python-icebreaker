@@ -23,7 +23,6 @@ def load_img(img_path):
 
 
 def multigroup(filelist_full):
-
     # for filename in filelist:
     img = load_img(filelist_full)  # (os.path.join(indir, filename))
     splitpath = os.path.split(filelist_full)
@@ -48,7 +47,6 @@ def multigroup(filelist_full):
 
 
 def equalize_im(img, x_patches, y_patches, num_of_segments):
-
     filter_mask = fd.lowpass(img, 0.85, 20, "cos", 50)
     lowpass, mag = fd.filtering(img, filter_mask)
     lowpass = cv2.GaussianBlur(lowpass, (45, 45), 0)

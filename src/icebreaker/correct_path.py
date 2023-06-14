@@ -10,7 +10,7 @@ import shutil
 
 
 def correct(data_as_dict, all_dir, ending):
-   for i in range(len(data_as_dict["_rlnmicrographname"])):
+    for i in range(len(data_as_dict["_rlnmicrographname"])):
         name = data_as_dict["_rlnmicrographname"][i]
         # New name needs to be extracted from inputs of form
         # JobName/JobNumber/path/to/file.suffix

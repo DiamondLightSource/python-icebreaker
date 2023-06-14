@@ -74,7 +74,9 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
             if micrograph.endswith("mrc"):
                 f.write(micrograph + "\n")
 
-    correct_path.correct(data_as_dict, os.path.join("IB_input", f"{mode}ed"), f"{mode}ed")
+    correct_path.correct(
+        data_as_dict, os.path.join("IB_input", f"{mode}ed"), f"{mode}ed"
+    )
 
     # Writing a star file for Relion
     # part_doc = open('ib_equalize.star', 'w')

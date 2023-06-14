@@ -20,14 +20,12 @@ from icebreaker import original_mask_fast as omf
 
 def load_img(img_path):
     with mrcfile.open(img_path, "r", permissive=True) as mrc:
-
         # mrc.header.map = mrcfile.constants.MAP_ID
         img = mrc.data
         return img
 
 
 def multigroup(filelist_full):
-
     # for filename in filelist:
     img = load_img(filelist_full)
     splitpath = os.path.split(filelist_full)
@@ -51,7 +49,6 @@ def multigroup(filelist_full):
 
 
 def ice_grouper(img, x_patches, y_patches, num_of_segments):
-
     filter_mask = fd.lowpass(img, 0.85, 20, "cos", 50)
     lowpass, mag = fd.filtering(img, filter_mask)
     lowpass = cv2.GaussianBlur(lowpass, (45, 45), 0)
