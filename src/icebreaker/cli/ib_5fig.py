@@ -34,21 +34,22 @@ def run_job(project_dir, job_dir, args_list, cpus):
         in_doc = gemmi.cif.read_file(ctf_star)
 
         data_as_dict = json.loads(in_doc.as_json())["micrographs"]
+
+        # Not crucial so if fails due to any reason just carry on
+        try:
+            with open("done_mics.txt", "r") as f:
+                done_mics = f.read().splitlines()
+        except Exception:
+            done_mics = []
     else:
         data_as_dict = {"_rlnmicrographname": [args.single_mic]}
+        done_mics = []
 
     try:
         os.mkdir("IB_input")
     except FileExistsError:
         shutil.rmtree("IB_input")
         os.mkdir("IB_input")
-
-    # Not crucial so if fails due to any reason just carry on
-    try:
-        with open("done_mics.txt", "r") as f:
-            done_mics = f.read().splitlines()
-    except Exception:
-        done_mics = []
 
     for micrograph in data_as_dict["_rlnmicrographname"]:
         if os.path.split(micrograph)[-1] not in done_mics:
@@ -63,9 +64,12 @@ def run_job(project_dir, job_dir, args_list, cpus):
                 os.path.join("IB_input", *list(micpath.parts[2:])),
             )
 
-    five_figures.main(
+    five_fig_csv = five_figures.main(
         pathlib.Path(project_dir) / job_dir / "IB_input", cpus, append=True
     )
+    if args.single_mic:
+        summary_results = five_fig_csv[0].split(",")
+        print("Results: " + " ".join(summary_results))
     print("Done five figures")
 
     with open(

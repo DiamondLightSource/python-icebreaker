@@ -41,7 +41,7 @@ def main(grouped_mic_dir: str, cpus: int = 1, append: bool = False) -> None:
             f.write("path,min,q1,q2=median,q3,max\n")
             for line in csv_lines:
                 f.write(line)
-    return None
+    return csv_lines
 
 
 if __name__ == "__main__":
