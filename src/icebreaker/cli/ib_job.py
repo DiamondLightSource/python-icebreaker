@@ -29,7 +29,7 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
     parser.add_argument("--in_movies", help="Input: Imported movies star file", default=None)
     args = parser.parse_args(args_list)
     if not args.in_mics and not args.in_movies:
-        raise ValueError(f"One of either --in_mics or --in_movies inputs must be set")
+        raise ValueError("One of either --in_mics or --in_movies inputs must be set")
     starfile = args.in_movies or args.in_mics
 
     # Reading the micrographs star file from relion
