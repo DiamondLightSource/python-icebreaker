@@ -84,7 +84,7 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
     # part_doc.write(job_dir)
     # part_doc.close()
 
-    star_appender.mic_star(ctf_star, job_dir, mode)
+    star_appender.mic_star(ctf_star, job_dir, mode, movies=bool(args.in_movies))
 
     # Required star file
     out_doc = gemmi.cif.Document()
