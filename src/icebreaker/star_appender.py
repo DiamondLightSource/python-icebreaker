@@ -45,22 +45,24 @@ def update_star(starfile, ice_groups):
     new_document.write_file("particles.star")
 
 
-def mic_star(starfile, job, mode):
+def mic_star(starfile, job, mode, movies: bool = False):
+    block_name = "movies" if movies else "micrographs"
+    column_name = "_rlnMicrographMovieName" if movies else "_rlnMicrographName"
     in_doc = gemmi.cif.read_file(starfile)
-    block = in_doc.find_block("micrographs")
+    block = in_doc.find_block(block_name)
     new_document = gemmi.cif.Document()
-    block_one = new_document.add_new_block("micrographs")
+    block_one = new_document.add_new_block(block_name)
 
     for item in block:
         if item.loop is not None:
             table = item.loop
 
     tags = table.tags
-    tags.remove("_rlnMicrographName")
+    tags.remove(column_name)
     table = block.find(tags)
-    column = block.find(["_rlnMicrographName"])
+    column = block.find([column_name])
 
-    tags.insert(0, "_rlnMicrographName")
+    tags.insert(0, column_name)
 
     loop = block_one.init_loop("", tags)  # make temp new table
     for i in range(len(table)):
@@ -76,7 +78,7 @@ def mic_star(starfile, job, mode):
 
         loop.add_row(new_row)  # update temp new table with all data
 
-    new_document.write_file(f"{mode}ed_micrographs.star")
+    new_document.write_file(f"{mode}ed_{'movies' if movies else 'micrographs'}.star")
 
 
 if __name__ == "__main__":
