@@ -26,14 +26,18 @@ from icebreaker import icebreaker_icegroups_multi as ib_group
 def run_job(project_dir, job_dir, args_list, mode, cpus):
     parser = argparse.ArgumentParser()
     parser.add_argument("--in_mics", help="Input: Motion correction star file")
+    parser.add_argument("--in_movies", help="Input: Imported movies star file", default=None)
     args = parser.parse_args(args_list)
-    starfile = args.in_mics
+    starfile = args.in_movies or args.in_mics
 
     # Reading the micrographs star file from relion
     ctf_star = os.path.join(project_dir, starfile)
     in_doc = gemmi.cif.read_file(ctf_star)
 
-    data_as_dict = json.loads(in_doc.as_json())["micrographs"]
+    if args.in_movies:
+        data_as_dict = json.loads(in_doc.as_json())["movies"]
+    else:
+        data_as_dict = json.loads(in_doc.as_json())["micrographs"]
 
     try:
         os.mkdir("IB_input")
@@ -47,7 +51,10 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
             done_mics = f.read().splitlines()
     except Exception:
         done_mics = []
-    for micrograph in data_as_dict["_rlnmicrographname"]:
+
+    name_column = "_rlnmicrographmoviename" if args.in_movies else "_rlnmicrographname"
+
+    for micrograph in data_as_dict[name_column]:
         if os.path.split(micrograph)[-1] not in done_mics:
             os.link(
                 os.path.join(project_dir, micrograph),
