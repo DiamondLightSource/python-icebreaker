@@ -2,9 +2,7 @@
 Creates a folder tree that is the relion standard and then populates
 folder tree with the flattened micrographs produced by ICEBREAKER
 """
-import gemmi
 import os
-import json
 import pathlib
 import shutil
 
