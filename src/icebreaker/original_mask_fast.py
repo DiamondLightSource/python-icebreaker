@@ -1,9 +1,6 @@
 import cv2
 import numpy as np
 
-# import matplotlib.pyplot as plt
-# import mrcfile
-
 
 def original_mask(lowpass1, img2, val, original, lowpass12):
     reg3 = np.ones((img2.shape[0], img2.shape[1]), np.uint8)

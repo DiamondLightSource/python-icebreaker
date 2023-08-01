@@ -1,8 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# from mpl_toolkits.mplot3d import Axes3D
-
 
 def show_gradient(image):
     xx, yy = np.mgrid[0 : image.shape[0], 0 : image.shape[1]]

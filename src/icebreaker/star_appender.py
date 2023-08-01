@@ -1,8 +1,6 @@
 import gemmi
 import os
 
-# from pathlib import Path
-
 
 def update_star(starfile, ice_groups):
     new_document = gemmi.cif.Document()
