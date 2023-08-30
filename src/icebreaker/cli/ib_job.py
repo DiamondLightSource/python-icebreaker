@@ -59,7 +59,7 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
             except FileExistsError:
                 print(
                     f"WARNING: IB_input/{os.path.split(micrograph)[-1]} "
-                    "already exists but is not in done_mics.txt"
+                    "already exists but is not in the done micrographs"
                 )
 
     if mode == "group":

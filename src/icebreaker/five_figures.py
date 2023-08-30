@@ -38,7 +38,7 @@ def _process_mrc(img_path: str, csv_lines: list, lock: Lock, r: int) -> None:
     return None
 
 
-def main(grouped_mic_dir: str, cpus: int = 1, append: bool = False) -> None:
+def main(grouped_mic_dir: str, cpus: int = 1, append: bool = False) -> list:
     manager = Manager()
     lock = manager.Lock()
     files = [str(filename) for filename in Path(grouped_mic_dir).glob("**/*.mrc")]

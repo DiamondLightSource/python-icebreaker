@@ -8,19 +8,12 @@ Run in main Relion project directory
 """
 
 import argparse
-
-# import json
 import os
 import os.path
 
 import gemmi
 
 from icebreaker import ice_groups as ib_igroups
-
-# import shutil
-
-
-# import sys
 
 
 def run_job(project_dir, job_dir, args_list):

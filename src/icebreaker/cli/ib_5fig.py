@@ -52,17 +52,22 @@ def run_job(project_dir, job_dir, args_list, cpus):
             )
             if not link_path.exists():
                 link_path.mkdir(parents=True)
-            os.link(
-                os.path.join(project_dir, micrograph),
-                os.path.join("IB_input", *list(micpath.parts[2:])),
-            )
+            try:
+                (pathlib.Path("IB_input") / pathlib.Path(micrograph).name).symlink_to(
+                    pathlib.Path(project_dir) / micrograph
+                )
+            except FileExistsError:
+                print(
+                    f"WARNING: IB_input/{os.path.split(micrograph)[-1]} "
+                    "already exists but is not in the done micrographs"
+                )
 
     if args.single_mic:
-        link_path = pathlib.Path("IB_input") / pathlib.Path(
-            *list(pathlib.Path(args.single_mic).parent.parts)[2:]
-        )
         five_fig_csv = five_figures.single_mic_5fig(
-            pathlib.Path(project_dir) / job_dir / link_path
+            pathlib.Path(project_dir)
+            / job_dir
+            / "IB_input"
+            / pathlib.Path(args.single_mic).name
         )
         summary_results = five_fig_csv.split(",")
         print("Results: " + " ".join(summary_results))
