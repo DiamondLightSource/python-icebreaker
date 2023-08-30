@@ -7,6 +7,22 @@ from multiprocessing import Pool, Lock, Manager
 from pathlib import Path
 
 
+def single_mic_5fig(mic_name: str, r: int = 10000) -> str:
+    with mrcfile.open(img_path, "r", permissive=True) as mrc:
+        img = mrc.data
+        if not np.isnan(np.sum(img)):
+            path = img_path[:-4]
+            min = int(np.min(img) * r)
+            q1 = int(np.quantile(img, 0.25) * r)
+            median = int(np.median(img) * r)
+            q3 = int(np.quantile(img, 0.75) * r)
+            max = int(np.max(img) * r)
+            csv_lines = f"{path},{min},{q1},{median},{q3},{max}"
+        else:
+            csv_lines = ""
+    return csv_lines
+
+
 def _process_mrc(img_path: str, csv_lines: list, lock: Lock, r: int) -> None:
     with mrcfile.open(img_path, "r", permissive=True) as mrc:
         img = mrc.data

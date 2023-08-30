@@ -16,8 +16,6 @@ import gemmi
 
 from icebreaker import five_figures
 
-# import sys
-
 
 def run_job(project_dir, job_dir, args_list, cpus):
     parser = argparse.ArgumentParser()
@@ -45,11 +43,7 @@ def run_job(project_dir, job_dir, args_list, cpus):
         data_as_dict = {"_rlnmicrographname": [args.single_mic]}
         done_mics = []
 
-    try:
-        os.mkdir("IB_input")
-    except FileExistsError:
-        shutil.rmtree("IB_input")
-        os.mkdir("IB_input")
+    pathlib.Path("IB_input").mkdir(exist_ok=True)
 
     for micrograph in data_as_dict["_rlnmicrographname"]:
         if os.path.split(micrograph)[-1] not in done_mics:
@@ -64,20 +58,28 @@ def run_job(project_dir, job_dir, args_list, cpus):
                 os.path.join("IB_input", *list(micpath.parts[2:])),
             )
 
-    five_fig_csv = five_figures.main(
-        pathlib.Path(project_dir) / job_dir / "IB_input", cpus, append=True
-    )
     if args.single_mic:
-        summary_results = five_fig_csv[0].split(",")
+        link_path = pathlib.Path("IB_input") / pathlib.Path(
+            *list(pathlib.Path(args.single_mic).parent.parts)[2:]
+        )
+        five_fig_csv = five_figures.single_mic_5fig(
+            pathlib.Path(project_dir) / job_dir / link_path
+        )
+        summary_results = five_fig_csv.split(",")
         print("Results: " + " ".join(summary_results))
+    else:
+        five_fig_csv = five_figures.main(
+            pathlib.Path(project_dir) / job_dir / "IB_input", cpus, append=True
+        )
     print("Done five figures")
 
-    with open(
-        "done_mics.txt", "a+"
-    ) as f:  # Done mics is to ensure that IB doesn't pick from already done mics
-        for micrograph in pathlib.Path("./IB_input").glob("**/*"):
-            if micrograph.suffix == ".mrc":
-                f.write(micrograph.name + "\n")
+    if args.in_mics:
+        with open(
+            "done_mics.txt", "a+"
+        ) as f:  # Done mics is to ensure that IB doesn't pick from already done mics
+            for micrograph in pathlib.Path("./IB_input").glob("**/*"):
+                if micrograph.suffix == ".mrc":
+                    f.write(micrograph.name + "\n")
 
     # Required star file
     out_doc = gemmi.cif.Document()

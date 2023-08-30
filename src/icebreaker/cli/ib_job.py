@@ -21,8 +21,6 @@ from icebreaker import icebreaker_equalize_multi as ib_equal
 from icebreaker import icebreaker_icegroups_multi as ib_group
 from icebreaker import star_appender
 
-# import sys
-
 
 def run_job(project_dir, job_dir, args_list, mode, cpus):
     parser = argparse.ArgumentParser()
@@ -50,18 +48,20 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
         data_as_dict = {"_rlnmicrographname": [args.single_mic]}
         done_mics = []
 
-    try:
-        os.mkdir("IB_input")
-    except FileExistsError:
-        shutil.rmtree("IB_input")
-        os.mkdir("IB_input")
+    pathlib.Path("IB_input").mkdir(exist_ok=True)
 
     for micrograph in data_as_dict["_rlnmicrographname"]:
         if os.path.split(micrograph)[-1] not in done_mics:
-            os.link(
-                os.path.join(project_dir, micrograph),
-                os.path.join("IB_input", os.path.split(micrograph)[-1]),
-            )
+            try:
+                os.link(
+                    os.path.join(project_dir, micrograph),
+                    os.path.join("IB_input", os.path.split(micrograph)[-1]),
+                )
+            except:
+                print(
+                    f"WARNING: IB_input/{os.path.split(micrograph)[-1]} "
+                    "already exists but is not in done_mics.txt"
+                )
 
     if mode == "group":
         ib_group.main("IB_input", cpus)
@@ -69,12 +69,13 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
     elif mode == "flatten":
         ib_equal.main("IB_input", cpus)
 
-    with open(
-        "done_mics.txt", "a+"
-    ) as f:  # Done mics is to ensure that IB doesn't pick from already done mics
-        for micrograph in os.listdir("IB_input"):
-            if micrograph.endswith("mrc"):
-                f.write(micrograph + "\n")
+    if args.in_mics:
+        with open(
+            "done_mics.txt", "a+"
+        ) as f:  # Done mics is to ensure that IB doesn't pick from already done mics
+            for micrograph in os.listdir("IB_input"):
+                if micrograph.endswith("mrc"):
+                    f.write(micrograph + "\n")
 
     correct_path.correct(
         data_as_dict, os.path.join("IB_input", f"{mode}ed"), f"{mode}ed"
