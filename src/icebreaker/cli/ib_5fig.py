@@ -10,7 +10,6 @@ import json
 import os
 import os.path
 import pathlib
-import shutil
 
 import gemmi
 

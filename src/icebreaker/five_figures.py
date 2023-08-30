@@ -1,17 +1,16 @@
 import sys
-import numpy as np
+from multiprocessing import Lock, Manager, Pool
+from pathlib import Path
 
 import mrcfile
-
-from multiprocessing import Pool, Lock, Manager
-from pathlib import Path
+import numpy as np
 
 
 def single_mic_5fig(mic_name: str, r: int = 10000) -> str:
-    with mrcfile.open(img_path, "r", permissive=True) as mrc:
+    with mrcfile.open(mic_name, "r", permissive=True) as mrc:
         img = mrc.data
         if not np.isnan(np.sum(img)):
-            path = img_path[:-4]
+            path = mic_name[:-4]
             min = int(np.min(img) * r)
             q1 = int(np.quantile(img, 0.25) * r)
             median = int(np.median(img) * r)

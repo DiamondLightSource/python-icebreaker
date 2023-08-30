@@ -12,7 +12,7 @@ import argparse
 import json
 import os
 import os.path
-import shutil
+import pathlib
 
 import gemmi
 
@@ -53,11 +53,10 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
     for micrograph in data_as_dict["_rlnmicrographname"]:
         if os.path.split(micrograph)[-1] not in done_mics:
             try:
-                os.link(
-                    os.path.join(project_dir, micrograph),
-                    os.path.join("IB_input", os.path.split(micrograph)[-1]),
+                (pathlib.Path("IB_input") / pathlib.Path(micrograph).name).symlink_to(
+                    pathlib.Path(project_dir) / micrograph
                 )
-            except:
+            except FileExistsError:
                 print(
                     f"WARNING: IB_input/{os.path.split(micrograph)[-1]} "
                     "already exists but is not in done_mics.txt"
