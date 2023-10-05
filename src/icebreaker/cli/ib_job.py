@@ -13,6 +13,7 @@ import json
 import os
 import os.path
 import pathlib
+import shutil
 
 import gemmi
 
@@ -62,11 +63,25 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
                     "already exists but is not in the done micrographs"
                 )
 
-    if mode == "group":
-        ib_group.main("IB_input", cpus)
-        print("Done equalizing")
-    elif mode == "flatten":
-        ib_equal.main("IB_input", cpus)
+    if args.in_mics:
+        if mode == "group":
+            ib_group.main("IB_input", cpus)
+            print("Done equalizing")
+        elif mode == "flatten":
+            ib_equal.main("IB_input", cpus)
+    else:
+        for micrograph in data_as_dict["_rlnmicrographname"]:
+            micrograph_name = pathlib.Path(micrograph).name
+            pathlib.Path(f"IB_input_{micrograph_name}").mkdir()
+            (pathlib.Path(f"IB_input_{micrograph_name}") / micrograph_name).symlink_to(
+                pathlib.Path(project_dir) / micrograph
+            )
+            if mode == "group":
+                ib_group.main(f"IB_input_{micrograph_name}", cpus)
+                print("Done equalizing")
+            elif mode == "flatten":
+                ib_equal.main(f"IB_input_{micrograph_name}", cpus)
+            shutil.rmtree(f"IB_input_{micrograph_name}")
 
     if args.in_mics:
         with open(
