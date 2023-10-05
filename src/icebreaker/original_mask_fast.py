@@ -1,7 +1,5 @@
 import cv2
 import numpy as np
-# import matplotlib.pyplot as plt
-# import mrcfile
 
 
 def original_mask(lowpass1, img2, val, original, lowpass12):

@@ -1,7 +1,6 @@
 import mrcfile
 import cv2
 import numpy as np
-# import matplotlib.pyplot as plt
 
 
 def load_img(img_path):

@@ -10,39 +10,39 @@ import json
 import os
 import os.path
 import pathlib
-import shutil
 
 import gemmi
 
 from icebreaker import five_figures
 
-# import sys
-
 
 def run_job(project_dir, job_dir, args_list, cpus):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--in_mics", help="Input: IB_grouped star file")
+    input_group = parser.add_mutually_exclusive_group(required=True)
+    input_group.add_argument("--in_mics", help="Input: IB_grouped star file")
+    input_group.add_argument("--single_mic", help="A single IB_grouped micrograph")
     args = parser.parse_args(args_list)
-    starfile = args.in_mics
 
-    # Reading the micrographs star file from relion
-    ctf_star = os.path.join(project_dir, starfile)
-    in_doc = gemmi.cif.read_file(ctf_star)
+    if args.in_mics:
+        starfile = args.in_mics
 
-    data_as_dict = json.loads(in_doc.as_json())["micrographs"]
+        # Reading the micrographs star file from relion
+        ctf_star = os.path.join(project_dir, starfile)
+        in_doc = gemmi.cif.read_file(ctf_star)
 
-    try:
-        os.mkdir("IB_input")
-    except FileExistsError:
-        shutil.rmtree("IB_input")
-        os.mkdir("IB_input")
+        data_as_dict = json.loads(in_doc.as_json())["micrographs"]
 
-    # Not crucial so if fails due to any reason just carry on
-    try:
-        with open("done_mics.txt", "r") as f:
-            done_mics = f.read().splitlines()
-    except Exception:
+        # Not crucial so if fails due to any reason just carry on
+        try:
+            with open("done_mics.txt", "r") as f:
+                done_mics = f.read().splitlines()
+        except Exception:
+            done_mics = []
+    else:
+        data_as_dict = {"_rlnmicrographname": [args.single_mic]}
         done_mics = []
+
+    pathlib.Path("IB_input").mkdir(exist_ok=True)
 
     for micrograph in data_as_dict["_rlnmicrographname"]:
         if os.path.split(micrograph)[-1] not in done_mics:
@@ -52,22 +52,38 @@ def run_job(project_dir, job_dir, args_list, cpus):
             )
             if not link_path.exists():
                 link_path.mkdir(parents=True)
-            os.link(
-                os.path.join(project_dir, micrograph),
-                os.path.join("IB_input", *list(micpath.parts[2:])),
-            )
+            try:
+                (pathlib.Path("IB_input") / pathlib.Path(micrograph).name).symlink_to(
+                    pathlib.Path(project_dir) / micrograph
+                )
+            except FileExistsError:
+                print(
+                    f"WARNING: IB_input/{os.path.split(micrograph)[-1]} "
+                    "already exists but is not in the done micrographs"
+                )
 
-    five_figures.main(
-        pathlib.Path(project_dir) / job_dir / "IB_input", cpus, append=True
-    )
+    if args.single_mic:
+        five_fig_csv = five_figures.single_mic_5fig(
+            pathlib.Path(project_dir)
+            / job_dir
+            / "IB_input"
+            / pathlib.Path(args.single_mic).name
+        )
+        summary_results = five_fig_csv.split(",")
+        print("Results: " + " ".join(summary_results))
+    else:
+        five_fig_csv = five_figures.main(
+            pathlib.Path(project_dir) / job_dir / "IB_input", cpus, append=True
+        )
     print("Done five figures")
 
-    with open(
-        "done_mics.txt", "a+"
-    ) as f:  # Done mics is to ensure that IB doesn't pick from already done mics
-        for micrograph in pathlib.Path("./IB_input").glob("**/*"):
-            if micrograph.suffix == ".mrc":
-                f.write(micrograph.name + "\n")
+    if args.in_mics:
+        with open(
+            "done_mics.txt", "a+"
+        ) as f:  # Done mics is to ensure that IB doesn't pick from already done mics
+            for micrograph in pathlib.Path("./IB_input").glob("**/*"):
+                if micrograph.suffix == ".mrc":
+                    f.write(micrograph.name + "\n")
 
     # Required star file
     out_doc = gemmi.cif.Document()

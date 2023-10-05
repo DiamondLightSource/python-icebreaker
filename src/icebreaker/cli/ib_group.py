@@ -8,19 +8,12 @@ Run in main Relion project directory
 """
 
 import argparse
-
-# import json
 import os
 import os.path
 
 import gemmi
 
 from icebreaker import ice_groups as ib_igroups
-
-# import shutil
-
-
-# import sys
 
 
 def run_job(project_dir, job_dir, args_list):
@@ -40,10 +33,13 @@ def run_job(project_dir, job_dir, args_list):
     )
 
     # Writing a star file for Relion
-    part_doc = open("ib_icegroups.star", "w")
-    part_doc.write(os.path.join(project_dir, parts_star))
-    part_doc.write(os.path.join(project_dir, group_star))
-    part_doc.close()
+    icegroups_doc = gemmi.cif.Document()
+    icegroups_block = icegroups_doc.add_new_block("input_files")
+    loop = icegroups_block.init_loop("", ["_rlnParticles", "_rlnMicrographs"])
+    loop.add_row(
+        [os.path.join(project_dir, parts_star), os.path.join(project_dir, group_star)]
+    )
+    icegroups_doc.write_file("ib_icegroups.star")
 
     # Required star file
     out_doc = gemmi.cif.Document()
