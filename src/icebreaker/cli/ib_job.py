@@ -71,16 +71,21 @@ def run_job(project_dir, job_dir, args_list, mode, cpus):
             ib_equal.main("IB_input", cpus)
     else:
         for micrograph in data_as_dict["_rlnmicrographname"]:
-            micrograph_name = pathlib.Path(micrograph).name
+            micrograph_name = pathlib.Path(pathlib.Path(micrograph).name).stem
             pathlib.Path(f"IB_input_{micrograph_name}").mkdir()
-            (pathlib.Path(f"IB_input_{micrograph_name}") / micrograph_name).symlink_to(
-                pathlib.Path(project_dir) / micrograph
-            )
+            (
+                pathlib.Path(f"IB_input_{micrograph_name}") / f"{micrograph_name}.mrc"
+            ).symlink_to(pathlib.Path(project_dir) / micrograph)
             if mode == "group":
                 ib_group.main(f"IB_input_{micrograph_name}", cpus)
                 print("Done equalizing")
             elif mode == "flatten":
                 ib_equal.main(f"IB_input_{micrograph_name}", cpus)
+
+            pathlib.Path(f"IB_input/{mode}ed").mkdir(exist_ok=True)
+            pathlib.Path(
+                f"IB_input_{micrograph_name}/{mode}ed/{micrograph_name}_{mode}ed.mrc"
+            ).rename(f"IB_input/{mode}ed/{micrograph_name}_{mode}ed.mrc")
             shutil.rmtree(f"IB_input_{micrograph_name}")
 
     if args.in_mics:
