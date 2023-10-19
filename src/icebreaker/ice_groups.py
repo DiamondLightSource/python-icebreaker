@@ -1,11 +1,11 @@
 import collections
-import sys
+import json
 import os
-import mrcfile
-import numpy as np
+import sys
 
 import gemmi
-import json
+import mrcfile
+import numpy as np
 
 from icebreaker import star_appender
 
@@ -60,7 +60,7 @@ def main(starfile, mic_path):
         for part_ind in mic_coord[mic]:
             x1 = int(np.floor(data_as_dict["_rlncoordinatex"][part_ind]))
             y1 = int(np.floor(data_as_dict["_rlncoordinatey"][part_ind]))
-            if micro_now is not None:
+            if micro_now is not None and np.isfinite(micro_now[y1][x1]):
                 ice_groups.append(int(micro_now[y1][x1] * 10000))
             else:
                 ice_groups.append(-1)
