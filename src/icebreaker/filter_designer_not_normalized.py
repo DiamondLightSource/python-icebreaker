@@ -1,7 +1,7 @@
-import mrcfile
 import cv2
-import numpy as np
 import matplotlib.pyplot as plt
+import mrcfile
+import numpy as np
 
 
 def load_img(img_path):
@@ -28,7 +28,7 @@ def lowpass(img, pixel_size, lowcut, edge_type, falloff, lowpass=True):
                 mask,
                 (ccol, crow),
                 mask_rad + i,
-                (np.cos(i * ((3.14 * 0.5) / falloff))),
+                (np.cos(i * ((np.pi * 0.5) / falloff))),
                 2,
             )
     elif edge_type == "linear":
@@ -77,7 +77,7 @@ def bandpass(
                 bandpass_out,
                 (ccol, crow),
                 mask_rad_out + i,
-                (np.cos(i * ((3.14 * 0.5) / falloff_out))),
+                (np.cos(i * ((np.pi * 0.5) / falloff_out))),
                 2,
             )
         for i in range(falloff_in):
@@ -85,7 +85,7 @@ def bandpass(
                 bandpass_in,
                 (ccol, crow),
                 mask_rad_in + i,
-                (np.cos(i * ((3.14 * 0.5) / falloff_in))),
+                (np.cos(i * ((np.pi * 0.5) / falloff_in))),
                 2,
             )
 
