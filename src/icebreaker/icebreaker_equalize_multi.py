@@ -3,17 +3,18 @@ Input is group of motion corrected micrographs.
 Output is group of equalized images.
 """
 
-import sys
-import mrcfile
-import cv2
-import numpy as np
 import os
+import sys
 from multiprocessing import Pool
 
+import cv2
+import mrcfile
+import numpy as np
+
+from icebreaker import KMeans_segmenter as KMeans_seg
 from icebreaker import filter_designer as fd
-from icebreaker import window_mean as wm
 from icebreaker import local_mask as lm
-from icebreaker import KNN_segmenter as KNN_seg
+from icebreaker import window_mean as wm
 
 
 def load_img(img_path):
@@ -53,7 +54,7 @@ def equalize_im(img, x_patches, y_patches, num_of_segments):
     rolled = wm.window(lowpass, x_patches, y_patches)
     rolled_resized = cv2.resize(rolled, (185, 190), interpolation=cv2.INTER_NEAREST)
     rolled_resized = cv2.GaussianBlur(rolled_resized, (5, 5), 0)
-    KNNsegmented = KNN_seg.segmenter(rolled_resized, num_of_segments)
+    KNNsegmented = KMeans_seg.segmenter(rolled_resized, num_of_segments)
 
     # upscaled_region = cv2.resize(
     # KNNsegmented, (lowpass.shape[1], lowpass.shape[0]), interpolation=cv2.INTER_AREA)
