@@ -11,10 +11,15 @@ import cv2
 import mrcfile
 import numpy as np
 
-from icebreaker import KMeans_segmenter as KMeans_seg
-from icebreaker import filter_designer as fd
-from icebreaker import local_mask as lm
-from icebreaker import window_mean as wm
+#from icebreaker import KMeans_segmenter as KMeans_seg
+#from icebreaker import filter_designer as fd
+#from icebreaker import local_mask as lm
+#from icebreaker import window_mean as wm
+
+import KMeans_segmenter as KMeans_seg
+import filter_designer as fd
+import local_mask as lm
+import window_mean as wm
 
 
 def load_img(img_path):
@@ -48,12 +53,12 @@ def multigroup(filelist_full):
 
 
 def equalize_im(img, x_patches, y_patches, num_of_segments):
-    filter_mask = fd.lowpass(img, 0.85, 20, "cos", 50)
+    filter_mask = fd.lowpass(img, 1, 20, "cos", 50)
     lowpass, mag = fd.filtering(img, filter_mask)
-    lowpass = cv2.GaussianBlur(lowpass, (45, 45), 0)
+    #lowpass = cv2.GaussianBlur(lowpass, (45, 45), 0)
     rolled = wm.window(lowpass, x_patches, y_patches)
     rolled_resized = cv2.resize(rolled, (185, 190), interpolation=cv2.INTER_NEAREST)
-    rolled_resized = cv2.GaussianBlur(rolled_resized, (5, 5), 0)
+    #rolled_resized = cv2.GaussianBlur(rolled_resized, (5, 5), 0)
     KNNsegmented = KMeans_seg.segmenter(rolled_resized, num_of_segments)
 
     # upscaled_region = cv2.resize(
@@ -120,5 +125,5 @@ def main(indir, cpus):
 
 if __name__ == "__main__":
     indir = sys.argv[1]
-    batch_size = sys.argv[2]
+    batch_size = int(sys.argv[2])
     main(indir, batch_size)

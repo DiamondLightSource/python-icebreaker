@@ -11,63 +11,71 @@ import cv2
 import mrcfile
 import numpy as np
 
-from icebreaker import KMeans_segmenter as KMeans_seg
-from icebreaker import filter_designer as fd
-from icebreaker import original_mask_fast as omf
-from icebreaker import window_mean as wm
+#from icebreaker import KMeans_segmenter as KMeans_seg
+#from icebreaker import filter_designer as fd
+#from icebreaker import original_mask_fast as omf
+#from icebreaker import window_mean as wm
+
+import KMeans_segmenter as KMeans_seg
+import filter_designer as fd
+import original_mask_fast as omf
+import window_mean as wm
 
 
 def load_img(img_path):
+    '''Loads mrc file using mrcfile library, returns image as a 2D array.
+
+    Args:
+        img_path(string): A path to an image(mrc file) 
+    '''
     with mrcfile.open(img_path, "r", permissive=True) as mrc:
-        # mrc.header.map = mrcfile.constants.MAP_ID
         img = mrc.data
         return img
 
 
-def multigroup(filelist_full):
-    # for filename in filelist:
+def multigroup(filelist_full): #possibly rename to output handler or sth for clarity this is kept as separate funciton in case if in the future image segmenation parameters would be defined by users
+    '''Defines the parameters for segmentation (number of patches and segments), calls the segmentation function, handles the output files, adding '_grouped.mrc' suffix to original name
+ 
+    Args:
+        filelist_full(list of strings): list containing paths to mrc files in a directory, created with main funtion
+    '''
+
     img = load_img(filelist_full)
     splitpath = os.path.split(filelist_full)
-    # print(splitpath[0])
-    # Config params
     x_patches = 40
     y_patches = 40
     num_of_segments = 16
-
     final_image = ice_grouper(img, x_patches, y_patches, num_of_segments)
-    # final_image = img  # !!!!! FOR TESTING
 
-    # with mrcfile.new((path1+str(filename[:-4]) +'_'+str(x_patches)+
-    # 'x'+str(y_patches)+'x'+str(num_of_segments)+'_original_mean'+'.mrc'),
-    # overwrite=True) as out_image:
     with mrcfile.new(
-        os.path.join(splitpath[0] + "/grouped/" + splitpath[1][:-4] + "_grouped.mrc"),
+        os.path.join(splitpath[0] + "/grouped/" + splitpath[1][:-4] + "_grouped_"+str(x_patches)+"x"+str(y_patches)+"x"+str(num_of_segments)+".mrc"),
         overwrite=True,
-    ) as out_image:  # Make fstring
+    ) as out_image:  
         out_image.set_data(final_image)
 
 
 def ice_grouper(img, x_patches, y_patches, num_of_segments):
-    filter_mask = fd.lowpass(img, 0.85, 20, "cos", 50)
-    lowpass, mag = fd.filtering(img, filter_mask)
-    lowpass = cv2.GaussianBlur(lowpass, (45, 45), 0)
-    lowpass12 = img
-    rolled = wm.window(lowpass, x_patches, y_patches)
-    rolled_resized = cv2.resize(rolled, (185, 190), interpolation=cv2.INTER_AREA)
-    rolled_resized = cv2.GaussianBlur(rolled_resized, (5, 5), 0)
-    KNNsegmented = KMeans_seg.segmenter(rolled_resized, num_of_segments)
-    # upscaled_region = cv2.resize(
-    #    KNNsegmented, (lowpass.shape[1], lowpass.shape[0]), interpolation=cv2.INTER_AREA
-    # )
+    '''Processes the image: average pooling, scaling, K-means segmentation. Average value from the original image is calculated for each segment idependently. Returns image as a 2D array of summed segments.  
+    
+    Args:
+        img(2D array) - image to process
+        x_patches(int) - number of patches in x direction of the image
+        y_patches(int) - number of patches in y direction of the image
+        num_of_segments(int) - desired number of groups for KMeans segmentation
+    '''    
 
-    regions_vals = np.unique(KNNsegmented)
+    rolled = wm.window(img, x_patches, y_patches)
+    rolled_resized = cv2.resize(rolled, (int(rolled.shape[1]/20), int(rolled.shape[0]/20)), interpolation=cv2.INTER_AREA) #change to patches or fixed size?
+    rolled_scaled = rolled_resized*10000
+    KMeans_segmented = KMeans_seg.segmenter(rolled_scaled, num_of_segments)
+    regions_vals = np.unique(KMeans_segmented)
     averaged_loc = np.zeros(
-        (lowpass.shape[0], lowpass.shape[1], num_of_segments), np.float32
+        (rolled_resized.shape[0], rolled_resized.shape[1], num_of_segments), np.float32
     )
-    res = np.zeros((lowpass.shape[0], lowpass.shape[1]), np.float32)
+    res = np.zeros((rolled_resized.shape[0], rolled_resized.shape[1]), np.float32)
     for i in range(len(regions_vals)):
         averaged_loc[:, :, i] = omf.original_mask(
-            lowpass, KNNsegmented, regions_vals[i], img, lowpass12
+            rolled_scaled, KMeans_segmented, regions_vals[i], rolled_resized, rolled
         )
         res[:, :] += averaged_loc[:, :, i]
 
@@ -77,6 +85,12 @@ def ice_grouper(img, x_patches, y_patches, num_of_segments):
 
 
 def main(indir, cpus):
+    '''Gets the list of all .mrc files to process from the input directory, creates a subfolder for the output files, runs the image processing in parallel on multiple CPUs, prints total processing time
+    
+    Args:
+        indir(string) - path to the folder containing input files
+        cpus(int) - number of CPUs to use for parallel processing
+    '''
     outdir = "grouped"
     path1 = os.path.join(indir, outdir)
     try:
@@ -92,21 +106,16 @@ def main(indir, cpus):
         if filename.endswith(".mrc"):
             finalpath = os.path.join(indir, filename)
             filelist.append(finalpath)
-            # print(filelist)
         else:
             continue
-
-    # cc = 0
 
     with Pool(cpus) as p:
         p.map(multigroup, filelist)
 
     print("------ %s sec------" % (time.time() - start_time))
-
     return True
-
 
 if __name__ == "__main__":
     indir = sys.argv[1]
-    batch_size = sys.argv[2]
+    batch_size = int(sys.argv[2])
     main(indir, batch_size)
