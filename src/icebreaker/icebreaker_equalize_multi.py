@@ -11,24 +11,35 @@ import cv2
 import mrcfile
 import numpy as np
 
-#from icebreaker import KMeans_segmenter as KMeans_seg
-#from icebreaker import filter_designer as fd
-#from icebreaker import local_mask as lm
-#from icebreaker import window_mean as wm
+from icebreaker import KMeans_segmenter as KMeans_seg
+from icebreaker import filter_designer as fd
+from icebreaker import local_mask as lm
+from icebreaker import window_mean as wm
 
-import KMeans_segmenter as KMeans_seg
-import filter_designer as fd
-import local_mask as lm
-import window_mean as wm
+#import KMeans_segmenter as KMeans_seg
+#import filter_designer as fd
+#import local_mask as lm
+#import window_mean as wm
 
 
 def load_img(img_path):
+    '''Loads mrc file using mrcfile library, returns image as a 2D array.
+
+    Args:
+        img_path(string): A path to an image(mrc file) 
+    '''
+
     with mrcfile.open(img_path, "r", permissive=True) as mrc:
         img = mrc.data
         return img
 
-
 def multigroup(filelist_full):
+    '''Defines the parameters for segmentation (number of patches and segments), calls the segmentation function, handles the output files, adding '_flattened.mrc' suffix to original name
+ 
+    Args:
+        filelist_full(list of strings): list containing paths to mrc files in a directory, created with main funtion
+    '''
+    
     # for filename in filelist:
     img = load_img(filelist_full)  # (os.path.join(indir, filename))
     splitpath = os.path.split(filelist_full)
@@ -52,7 +63,15 @@ def multigroup(filelist_full):
         out_image.set_data(final_image)
 
 
-def equalize_im(img, x_patches, y_patches, num_of_segments):
+def equalize_im(img, x_patches, y_patches, num_of_segments): 
+    '''Processes the image: average pooling, scaling, K-means segmentation. Histogram equalization is performed for each segment idependently. Returns image as a 2D array of summed segments.      
+    
+    Args:
+        img(2D array) - image to process
+        x_patches(int) - number of patches in x direction of the image
+        y_patches(int) - number of patches in y direction of the image
+        num_of_segments(int) - desired number of groups for KMeans segmentation
+    '''
     filter_mask = fd.lowpass(img, 1, 20, "cos", 50)
     lowpass, mag = fd.filtering(img, filter_mask)
     #lowpass = cv2.GaussianBlur(lowpass, (45, 45), 0)
@@ -78,6 +97,12 @@ def equalize_im(img, x_patches, y_patches, num_of_segments):
 
 
 def main(indir, cpus):
+    '''Gets the list of all .mrc files to process from the input directory, creates a subfolder for the output files, runs the image processing in parallel on multiple CPUs
+     
+    Args:
+        indir(string) - path to the folder containing input files
+        cpus(int) - number of CPUs to use for parallel processing
+    '''
     outdir = "flattened"
     path1 = os.path.join(indir, outdir)
 
@@ -125,5 +150,5 @@ def main(indir, cpus):
 
 if __name__ == "__main__":
     indir = sys.argv[1]
-    batch_size = int(sys.argv[2])
+    batch_size = sys.argv[2]
     main(indir, batch_size)

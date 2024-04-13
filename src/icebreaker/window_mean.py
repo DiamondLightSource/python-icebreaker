@@ -1,7 +1,18 @@
+'''
+Script for average pooling of individual micrographs.
+'''
+
 import numpy as np
 
 
 def window(img, x_patches, y_patches):
+    '''Calculates average value inside each non-overlapping moving window. Returns image of the same size as input, but with the superpixels containing average value for each defined patch in x and y direction.
+
+    Args:
+        img(2D array) - current micrograph for processing
+        x_patches(int) - requested number of patches in x direction of the micrograph
+        y_patches(int) - requested number of patches in y direction of the micrograph
+    '''
     rows, cols = img.shape
     x_patch_size = int(cols / x_patches)
     y_patch_size = int(rows / y_patches)

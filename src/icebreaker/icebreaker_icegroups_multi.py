@@ -11,15 +11,15 @@ import cv2
 import mrcfile
 import numpy as np
 
-#from icebreaker import KMeans_segmenter as KMeans_seg
-#from icebreaker import filter_designer as fd
-#from icebreaker import original_mask_fast as omf
-#from icebreaker import window_mean as wm
+from icebreaker import KMeans_segmenter as KMeans_seg
+from icebreaker import filter_designer as fd
+from icebreaker import original_mask_fast as omf
+from icebreaker import window_mean as wm
 
-import KMeans_segmenter as KMeans_seg
-import filter_designer as fd
-import original_mask_fast as omf
-import window_mean as wm
+#import KMeans_segmenter as KMeans_seg
+#import filter_designer as fd
+#import original_mask_fast as omf
+#import window_mean as wm
 
 
 def load_img(img_path):
@@ -117,5 +117,5 @@ def main(indir, cpus):
 
 if __name__ == "__main__":
     indir = sys.argv[1]
-    batch_size = int(sys.argv[2])
+    batch_size = sys.argv[2]
     main(indir, batch_size)

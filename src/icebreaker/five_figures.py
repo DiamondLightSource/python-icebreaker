@@ -1,3 +1,6 @@
+'''
+Script for analysis of the distribution of the pixel intensities on 'grouped' micrographs.
+'''
 import sys
 from multiprocessing import Lock, Manager, Pool
 from pathlib import Path
@@ -7,6 +10,12 @@ import numpy as np
 
 
 def single_mic_5fig(mic_name: str, r: int = 10000) -> str:
+    '''Process individual 'grouped' micrograph to obtain values for minimum, 1st quartile, median(2nd quartile), 3rd quartile, and maximum, that can be written to the csv file for furter analysis.
+
+    Args:
+        mic_name(string) - name of the micrograph
+        r(int) - scaling factor (10000 by default) to extend the pixel intensity range and avoid handling floating point numbers
+    '''
     with mrcfile.open(mic_name, "r", permissive=True) as mrc:
         img = mrc.data
         if not np.isnan(np.sum(img)):

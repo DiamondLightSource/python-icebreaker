@@ -1,3 +1,6 @@
+'''
+Script for plotting the boxplots based on the five-figure analysis of 'grouped' micrographs
+'''
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,6 +10,11 @@ import argparse
 
 
 def plot_boxes(indir):
+    '''Shows a figure with a series of boxplots that can be used for five-figures analysis based on the pixel intensity distribution on the segmented micrographs.
+
+    Args:
+        indir(string) - path to the folder containing '_grouped.mrc' micrographs (output folder of the 'icereaker_icegroups_multi.py' task
+    '''
     files = []
 
     for filename in os.listdir(indir):
