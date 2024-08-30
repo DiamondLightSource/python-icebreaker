@@ -26,7 +26,7 @@ def load_img(img_path):
     '''Loads mrc file using mrcfile library, returns image as a 2D array.
 
     Args:
-        img_path(string): A path to an image(mrc file) 
+        img_path(string): A path to an image(mrc file)
     '''
 
     with mrcfile.open(img_path, "r", permissive=True) as mrc:
@@ -35,11 +35,11 @@ def load_img(img_path):
 
 def multigroup(filelist_full):
     '''Defines the parameters for segmentation (number of patches and segments), calls the segmentation function, handles the output files, adding '_flattened.mrc' suffix to original name
- 
+
     Args:
         filelist_full(list of strings): list containing paths to mrc files in a directory, created with main funtion
     '''
-    
+
     # for filename in filelist:
     img = load_img(filelist_full)  # (os.path.join(indir, filename))
     splitpath = os.path.split(filelist_full)
@@ -49,11 +49,7 @@ def multigroup(filelist_full):
     num_of_segments = 32
 
     final_image = equalize_im(img, x_patches, y_patches, num_of_segments)
-    # final_image = img  # !!!! TESTING
 
-    # with mrcfile.new((path1+str(filename[:-4]) +'_'
-    # +str(x_patches)+'x'+str(y_patches)+'x'+str(num_of_segments)+'flattened'+'.mrc'),
-    # overwrite=True) as out_image:    # Make fstring
     with mrcfile.new(
         os.path.join(
             splitpath[0] + "/flattened/" + splitpath[1][:-4] + "_flattened.mrc"
@@ -63,9 +59,9 @@ def multigroup(filelist_full):
         out_image.set_data(final_image)
 
 
-def equalize_im(img, x_patches, y_patches, num_of_segments): 
-    '''Processes the image: average pooling, scaling, K-means segmentation. Histogram equalization is performed for each segment idependently. Returns image as a 2D array of summed segments.      
-    
+def equalize_im(img, x_patches, y_patches, num_of_segments):
+    '''Processes the image: average pooling, scaling, K-means segmentation. Histogram equalization is performed for each segment idependently. Returns image as a 2D array of summed segments.
+
     Args:
         img(2D array) - image to process
         x_patches(int) - number of patches in x direction of the image
@@ -74,14 +70,10 @@ def equalize_im(img, x_patches, y_patches, num_of_segments):
     '''
     filter_mask = fd.lowpass(img, 1, 20, "cos", 50)
     lowpass, mag = fd.filtering(img, filter_mask)
-    #lowpass = cv2.GaussianBlur(lowpass, (45, 45), 0)
     rolled = wm.window(lowpass, x_patches, y_patches)
-    rolled_resized = cv2.resize(rolled, (185, 190), interpolation=cv2.INTER_NEAREST)
-    #rolled_resized = cv2.GaussianBlur(rolled_resized, (5, 5), 0)
+    rolled_resized = cv2.resize(rolled, (int(rolled.shape[1]/20), int(rolled.shape[0]/20)), interpolation=cv2.INTER_NEAREST)
     KNNsegmented = KMeans_seg.segmenter(rolled_resized, num_of_segments)
 
-    # upscaled_region = cv2.resize(
-    # KNNsegmented, (lowpass.shape[1], lowpass.shape[0]), interpolation=cv2.INTER_AREA)
 
     regions_vals = np.unique(KNNsegmented)
     averaged_loc = np.zeros(
@@ -98,7 +90,7 @@ def equalize_im(img, x_patches, y_patches, num_of_segments):
 
 def main(indir, cpus):
     '''Gets the list of all .mrc files to process from the input directory, creates a subfolder for the output files, runs the image processing in parallel on multiple CPUs
-     
+
     Args:
         indir(string) - path to the folder containing input files
         cpus(int) - number of CPUs to use for parallel processing
@@ -121,27 +113,6 @@ def main(indir, cpus):
         else:
             continue
 
-    # cc = 0
-    # for filename in filelist:
-    #    img = load_img(os.path.join(indir, filename))
-
-    # Config params
-    #    x_patches = 40
-    #    y_patches = 40
-    #    num_of_segments = 32
-
-    #    final_image = equalize_im(img, x_patches, y_patches, num_of_segments)
-    # final_image = img  # !!!! TESTING
-
-    # with mrcfile.new((path1+str(filename[:-4]) +'_'+str(x_patches)+'x'+str(y_patches)+
-    # 'x'+str(num_of_segments)+'flattened'+'.mrc'), overwrite=True) as out_image:
-    # Make fstring
-    #   with mrcfile.new(os.path.join(path1, filename[:-4] + f'_{outdir}.mrc'),
-    #   overwrite=True) as out_image:    # Make fstring
-    #     out_image.set_data(final_image)
-
-    # cc += 1
-    # print(f'{cc}/{len(filelist)}')
     with Pool(cpus) as p:
         p.map(multigroup, filelist)
 

@@ -58,8 +58,8 @@ def main(starfile, mic_path):
             micro_now = mrc.data
 
         for part_ind in mic_coord[mic]:
-            x1 = int(np.floor(data_as_dict["_rlncoordinatex"][part_ind]))
-            y1 = int(np.floor(data_as_dict["_rlncoordinatey"][part_ind]))
+            x1 = int((np.floor(data_as_dict["_rlncoordinatex"][part_ind]))/20)
+            y1 = int((np.floor(data_as_dict["_rlncoordinatey"][part_ind]))/20)
             if micro_now is not None and np.isfinite(micro_now[y1][x1]):
                 ice_groups.append(int(micro_now[y1][x1] * 10000))
             else:
